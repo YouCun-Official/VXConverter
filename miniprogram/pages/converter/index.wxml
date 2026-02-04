@@ -5,7 +5,7 @@
   <view class="section">
     <view class="section-header">
       <view class="section-line"></view>
-      <text class="section-title">常用功能</text>
+      <text class="section-title">热门功能</text>
     </view>
 
     <view class="grid-container">
@@ -42,6 +42,82 @@
           <text class="emoji-icon">🔍</text>
         </view>
         <text class="grid-label">图片文字提取</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- PDF转其他板块 -->
+  <view class="section">
+    <view class="section-header">
+      <view class="section-line"></view>
+      <text class="section-title">PDF转其他</text>
+    </view>
+
+    <view class="grid-container">
+      <!-- PDF转PPT -->
+      <view class="grid-card" bindtap="navigateToPdfToPpt">
+        <view class="grid-icon pdf-to-ppt-icon">
+          <text class="emoji-icon">📽️</text>
+        </view>
+        <text class="grid-label">PDF转PPT</text>
+      </view>
+
+      <!-- PDF转图片 -->
+      <view class="grid-card" bindtap="navigateToPdfToImage">
+        <view class="grid-icon pdf-to-image-icon">
+          <text class="emoji-icon">🎨</text>
+        </view>
+        <text class="grid-label">PDF转图片</text>
+      </view>
+
+      <!-- PDF转Excel -->
+      <view class="grid-card" bindtap="navigateToPdfToExcel">
+        <view class="grid-icon pdf-to-excel-icon">
+          <text class="emoji-icon">📊</text>
+        </view>
+        <text class="grid-label">PDF转Excel</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 其他转PDF板块 -->
+  <view class="section">
+    <view class="section-header">
+      <view class="section-line"></view>
+      <text class="section-title">其他转PDF</text>
+    </view>
+
+    <view class="grid-container">
+      <!-- PPT转PDF -->
+      <view class="grid-card" bindtap="navigateToPptToPdf">
+        <view class="grid-icon ppt-to-pdf-icon">
+          <text class="emoji-icon">📽️</text>
+        </view>
+        <text class="grid-label">PPT转PDF</text>
+      </view>
+
+      <!-- Excel转PDF -->
+      <view class="grid-card" bindtap="navigateToExcelToPdfNew">
+        <view class="grid-icon excel-to-pdf-new-icon">
+          <text class="emoji-icon">📊</text>
+        </view>
+        <text class="grid-label">Excel转PDF</text>
+      </view>
+
+      <!-- TXT转PDF -->
+      <view class="grid-card" bindtap="navigateToTxtToPdf">
+        <view class="grid-icon txt-to-pdf-icon">
+          <text class="emoji-icon">📝</text>
+        </view>
+        <text class="grid-label">TXT转PDF</text>
+      </view>
+
+      <!-- Markdown转PDF -->
+      <view class="grid-card" bindtap="navigateToMarkdownToPdf">
+        <view class="grid-icon markdown-to-pdf-icon">
+          <text class="emoji-icon">📑</text>
+        </view>
+        <text class="grid-label">Markdown转PDF</text>
       </view>
     </view>
   </view>
@@ -84,6 +160,26 @@
           <text class="emoji-icon">💧</text>
         </view>
         <text class="grid-label">PDF加水印</text>
+      </view>
+    </view>
+  </view>
+
+
+
+  <!-- 其他转换板块 -->
+  <view class="section">
+    <view class="section-header">
+      <view class="section-line"></view>
+      <text class="section-title">其他工具</text>
+    </view>
+
+    <view class="grid-container">
+      <!-- AI文档纠错 -->
+      <view class="grid-card" bindtap="navigateToAiCorrection">
+        <view class="grid-icon ai-correction-icon">
+          <text class="emoji-icon">🤖</text>
+        </view>
+        <text class="grid-label">AI文档纠错</text>
       </view>
     </view>
   </view>

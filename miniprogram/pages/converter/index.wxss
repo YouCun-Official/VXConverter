@@ -122,12 +122,42 @@
   background: linear-gradient(135deg, #ff6e7f 0%, #bfe9ff 100%);
 }
 
+.pdf-to-ppt-icon {
+  background: linear-gradient(135deg, #f5576c 0%, #f093fb 100%);
+}
+
+.pdf-to-excel-icon {
+  background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+}
+
+.ppt-to-pdf-icon {
+  background: linear-gradient(135deg, #FF6B6B 0%, #FFD93D 100%);
+}
+
+.excel-to-pdf-new-icon {
+  background: linear-gradient(135deg, #1D976C 0%, #93F9B9 100%);
+}
+
+.txt-to-pdf-icon {
+  background: linear-gradient(135deg, #606c88 0%, #3f4c6b 100%);
+}
+
+.markdown-to-pdf-icon {
+  background: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
+}
+
 .pdf-split-icon {
   background: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%);
 }
 
 .pdf-watermark-icon {
   background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+}
+
+
+
+.ai-correction-icon {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
 }
 
 .emoji-icon {
@@ -152,7 +182,7 @@
 }
 
 .grid-sub-label {
-  font-size: 14rpx;
+  font-size: 20rpx;
   color: #666666;
   margin-top: 4rpx;
 }

@@ -65,6 +65,54 @@ Page({
         });
     },
 
+    navigateToPdfToPpt() {
+        wx.showToast({
+            title: '功能开发中，敬请期待',
+            icon: 'none',
+            duration: 2000
+        });
+    },
+
+    navigateToPdfToExcel() {
+        wx.showToast({
+            title: '功能开发中，敬请期待',
+            icon: 'none',
+            duration: 2000
+        });
+    },
+
+    navigateToPptToPdf() {
+        wx.showToast({
+            title: '功能开发中，敬请期待',
+            icon: 'none',
+            duration: 2000
+        });
+    },
+
+    navigateToExcelToPdfNew() {
+        wx.showToast({
+            title: '功能开发中，敬请期待',
+            icon: 'none',
+            duration: 2000
+        });
+    },
+
+    navigateToTxtToPdf() {
+        wx.showToast({
+            title: '功能开发中，敬请期待',
+            icon: 'none',
+            duration: 2000
+        });
+    },
+
+    navigateToMarkdownToPdf() {
+        wx.showToast({
+            title: '功能开发中，敬请期待',
+            icon: 'none',
+            duration: 2000
+        });
+    },
+
     navigateToPdfToImage() {
         wx.showToast({
             title: '功能开发中，敬请期待',
@@ -82,6 +130,14 @@ Page({
     },
 
     navigateToPdfWatermark() {
+        wx.showToast({
+            title: '功能开发中，敬请期待',
+            icon: 'none',
+            duration: 2000
+        });
+    },
+
+    navigateToAiCorrection() {
         wx.showToast({
             title: '功能开发中，敬请期待',
             icon: 'none',
