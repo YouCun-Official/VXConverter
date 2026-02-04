@@ -1,0 +1,17 @@
+{
+    "name": "word-to-pdf",
+    "version": "1.0.0",
+    "description": "Word to PDF conversion cloud function with Puppeteer",
+    "main": "index.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "author": "",
+    "license": "ISC",
+    "dependencies": {
+        "wx-server-sdk": "~2.6.3",
+        "mammoth": "^1.6.0",
+        "puppeteer-core": "^21.0.0",
+        "@sparticuz/chromium": "^119.0.0"
+    }
+}

@@ -1,0 +1,66 @@
+<!--pages/image-to-pdf/image-to-pdf.wxml-->
+<view class="container">
+  <view class="header">
+    <text class="title">图片转PDF</text>
+    <text class="subtitle">支持多次添加图片，合并为一个PDF</text>
+  </view>
+
+  <!-- 图片预览区域 -->
+  <view class="image-preview-section" wx:if="{{images.length > 0}}">
+    <view class="section-title">
+      <text>已选择 {{images.length}} 张图片</text>
+    </view>
+    
+    <scroll-view class="image-grid" scroll-y>
+      <view class="image-item" wx:for="{{images}}" wx:key="index">
+        <image class="preview-image" src="{{item}}" mode="aspectFill"></image>
+        <view class="image-actions">
+          <view class="action-btn move-up" wx:if="{{index > 0}}" bindtap="moveUp" data-index="{{index}}">
+            <text>↑</text>
+          </view>
+          <view class="action-btn move-down" wx:if="{{index < images.length - 1}}" bindtap="moveDown" data-index="{{index}}">
+            <text>↓</text>
+          </view>
+          <view class="action-btn delete" bindtap="deleteImage" data-index="{{index}}">
+            <text>×</text>
+          </view>
+        </view>
+        <view class="image-index">{{index + 1}}</view>
+      </view>
+    </scroll-view>
+  </view>
+
+  <!-- 空状态 -->
+  <view class="empty-state" wx:if="{{images.length === 0}}">
+    <text class="empty-icon">📷</text>
+    <text class="empty-text">还没有选择图片</text>
+    <text class="empty-hint">点击下方按钮添加图片</text>
+  </view>
+
+  <!-- 操作按钮区域 -->
+  <view class="actions">
+    <button class="btn btn-secondary" bindtap="addImages">
+      <text class="btn-icon">➕</text>
+      <text>添加图片</text>
+    </button>
+    
+    <button 
+      class="btn btn-primary" 
+      bindtap="generatePDF" 
+      disabled="{{images.length === 0 || isGenerating}}"
+    >
+      <text class="btn-icon" wx:if="{{!isGenerating}}">📄</text>
+      <text wx:if="{{isGenerating}}">生成中...</text>
+      <text wx:else>生成PDF</text>
+    </button>
+  </view>
+
+  <!-- 进度提示 -->
+  <view class="progress-overlay" wx:if="{{isGenerating}}">
+    <view class="progress-box">
+      <view class="spinner"></view>
+      <text class="progress-text">正在生成PDF...</text>
+      <text class="progress-detail">{{progressText}}</text>
+    </view>
+  </view>
+</view>

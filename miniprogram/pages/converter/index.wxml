@@ -1,0 +1,94 @@
+<!--pages/converter/index.wxml-->
+<view class="container">
+
+  <!-- 常用功能板块 -->
+  <view class="section">
+    <view class="section-header">
+      <view class="section-line"></view>
+      <text class="section-title">常用功能</text>
+    </view>
+
+    <view class="grid-container">
+      <!-- 图片转PDF -->
+      <view class="grid-card" bindtap="navigateToImageConverter">
+        <view class="grid-icon image-icon">
+          <text class="emoji-icon">🖼️</text>
+        </view>
+        <view class="grid-text-container">
+          <text class="grid-label">图片转PDF</text>
+          <text class="grid-sub-label">（文件扫描）</text>
+        </view>
+      </view>
+
+      <!-- Word转PDF -->
+      <view class="grid-card" bindtap="navigateToWordConverter">
+        <view class="grid-icon word-icon">
+          <text class="emoji-icon">📄</text>
+        </view>
+        <text class="grid-label">Word转PDF</text>
+      </view>
+
+      <!-- PDF转Word -->
+      <view class="grid-card" bindtap="navigateToPdfToWord">
+        <view class="grid-icon pdf-to-word-icon">
+          <text class="emoji-icon">📑</text>
+        </view>
+        <text class="grid-label">PDF转Word</text>
+      </view>
+
+      <!-- 图片文字提取 -->
+      <view class="grid-card" bindtap="navigateToImageOCR">
+        <view class="grid-icon ocr-icon">
+          <text class="emoji-icon">🔍</text>
+        </view>
+        <text class="grid-label">图片文字提取</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- PDF操作板块 -->
+  <view class="section">
+    <view class="section-header">
+      <view class="section-line"></view>
+      <text class="section-title">PDF操作</text>
+    </view>
+
+    <view class="grid-container">
+      <!-- PDF合并 -->
+      <view class="grid-card" bindtap="navigateToPdfMerge">
+        <view class="grid-icon pdf-merge-icon">
+          <text class="emoji-icon">📚</text>
+        </view>
+        <text class="grid-label">PDF合并</text>
+      </view>
+
+      <!-- PDF转图片 -->
+      <view class="grid-card" bindtap="navigateToPdfToImage">
+        <view class="grid-icon pdf-to-image-icon">
+          <text class="emoji-icon">🎨</text>
+        </view>
+        <text class="grid-label">PDF转图片</text>
+      </view>
+
+      <!-- PDF拆分 -->
+      <view class="grid-card" bindtap="navigateToPdfSplit">
+        <view class="grid-icon pdf-split-icon">
+          <text class="emoji-icon">✂️</text>
+        </view>
+        <text class="grid-label">PDF拆分</text>
+      </view>
+
+      <!-- PDF加水印 -->
+      <view class="grid-card" bindtap="navigateToPdfWatermark">
+        <view class="grid-icon pdf-watermark-icon">
+          <text class="emoji-icon">💧</text>
+        </view>
+        <text class="grid-label">PDF加水印</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="footer">
+    <text class="footer-text">更多功能即将上线</text>
+  </view>
+</view>
