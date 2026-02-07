@@ -164,6 +164,79 @@
     </view>
   </view>
 
+  <!-- 多媒体工具板块 -->
+  <view class="section">
+    <view class="section-header">
+      <view class="section-line"></view>
+      <text class="section-title">多媒体工具</text>
+    </view>
+
+    <view class="grid-container">
+      <!-- 视频格式转换 -->
+      <view class="grid-card" bindtap="navigateToVideoFormat">
+        <view class="grid-icon video-format-icon">
+          <text class="emoji-icon">🎬</text>
+        </view>
+        <text class="grid-label">视频格式转换</text>
+      </view>
+
+      <!-- 图片格式转换 -->
+      <view class="grid-card" bindtap="navigateToImageFormat">
+        <view class="grid-icon image-format-icon">
+          <text class="emoji-icon">🖼️</text>
+        </view>
+        <text class="grid-label">图片格式转换</text>
+      </view>
+
+      <!-- 音频格式转换 -->
+      <view class="grid-card" bindtap="navigateToAudioFormat">
+        <view class="grid-icon audio-format-icon">
+          <text class="emoji-icon">🎵</text>
+        </view>
+        <text class="grid-label">音频格式转换</text>
+      </view>
+
+      <!-- 视频转音频 -->
+      <view class="grid-card" bindtap="navigateToVideoToAudio">
+        <view class="grid-icon video-to-audio-icon">
+          <text class="emoji-icon">🎧</text>
+        </view>
+        <text class="grid-label">视频转音频</text>
+      </view>
+
+      <!-- 视频转GIF -->
+      <view class="grid-card" bindtap="navigateToVideoToGif">
+        <view class="grid-icon video-to-gif-icon">
+          <text class="emoji-icon">📸</text>
+        </view>
+        <text class="grid-label">视频转GIF</text>
+      </view>
+
+      <!-- 视频压缩 -->
+      <view class="grid-card" bindtap="navigateToVideoCompress">
+        <view class="grid-icon video-compress-icon">
+          <text class="emoji-icon">📹</text>
+        </view>
+        <text class="grid-label">视频压缩</text>
+      </view>
+
+      <!-- 图片压缩 -->
+      <view class="grid-card" bindtap="navigateToImageCompress">
+        <view class="grid-icon image-compress-icon">
+          <text class="emoji-icon">🗜️</text>
+        </view>
+        <text class="grid-label">图片压缩</text>
+      </view>
+
+      <!-- 音频压缩 -->
+      <view class="grid-card" bindtap="navigateToAudioCompress">
+        <view class="grid-icon audio-compress-icon">
+          <text class="emoji-icon">🔊</text>
+        </view>
+        <text class="grid-label">音频压缩</text>
+      </view>
+    </view>
+  </view>
 
 
   <!-- 其他转换板块 -->
@@ -180,6 +253,30 @@
           <text class="emoji-icon">🤖</text>
         </view>
         <text class="grid-label">AI文档纠错</text>
+      </view>
+
+      <!-- 电子签名 -->
+      <view class="grid-card" bindtap="navigateToESignature">
+        <view class="grid-icon e-signature-icon">
+          <text class="emoji-icon">✍️</text>
+        </view>
+        <text class="grid-label">电子签名</text>
+      </view>
+
+      <!-- 二维码生成 -->
+      <view class="grid-card" bindtap="navigateToQrCodeGenerator">
+        <view class="grid-icon qr-code-icon">
+          <text class="emoji-icon">🔳</text>
+        </view>
+        <text class="grid-label">二维码生成</text>
+      </view>
+
+      <!-- 证件照调整尺寸 -->
+      <view class="grid-card" bindtap="navigateToIDPhotoResize">
+        <view class="grid-icon id-photo-icon">
+          <text class="emoji-icon">📸</text>
+        </view>
+        <text class="grid-label">证件照调尺寸</text>
       </view>
     </view>
   </view>

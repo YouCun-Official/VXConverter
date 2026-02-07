@@ -1,0 +1,143 @@
+<!--pages/tools/signature/index.wxml-->
+<view class="container">
+  <!-- 签名画板区域 -->
+  <view class="canvas-section">
+    <view class="section-title">
+      <text class="title-text">签名区域</text>
+    </view>
+    <view class="canvas-card">
+      <canvas
+        type="2d"
+        id="signature-canvas"
+        class="signature-canvas"
+        bindtouchstart="touchStart"
+        catchtouchmove="touchMove"
+        bindtouchend="touchEnd"
+        disable-scroll="true"
+      ></canvas>
+      <view class="canvas-placeholder" wx:if="{{!hasSignature}}">
+        <text class="emoji-icon">✍️</text>
+        <text class="placeholder-text">请在此区域手写签名</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 工具栏 -->
+  <view class="toolbar-section">
+    <view class="section-title">
+      <text class="title-text">画笔设置</text>
+    </view>
+    <view class="toolbar-card">
+      <!-- 颜色选择 -->
+      <view class="tool-group">
+        <text class="tool-label">颜色</text>
+        <view class="color-options">
+          <view
+            class="color-item {{penColor === '#000000' ? 'active' : ''}}"
+            data-color="#000000"
+            bindtap="selectColor"
+          >
+            <view class="color-dot" style="background: #000000;"></view>
+            <text class="color-name">黑色</text>
+          </view>
+          <view
+            class="color-item {{penColor === '#0066CC' ? 'active' : ''}}"
+            data-color="#0066CC"
+            bindtap="selectColor"
+          >
+            <view class="color-dot" style="background: #0066CC;"></view>
+            <text class="color-name">蓝色</text>
+          </view>
+          <view
+            class="color-item {{penColor === '#CC0000' ? 'active' : ''}}"
+            data-color="#CC0000"
+            bindtap="selectColor"
+          >
+            <view class="color-dot" style="background: #CC0000;"></view>
+            <text class="color-name">红色</text>
+          </view>
+        </view>
+      </view>
+
+      <!-- 粗细调节 -->
+      <view class="tool-group">
+        <text class="tool-label">粗细</text>
+        <view class="width-options">
+          <view
+            class="width-item {{penWidth === 2 ? 'active' : ''}}"
+            data-width="2"
+            bindtap="selectWidth"
+          >
+            <view class="width-preview" style="height: 2px; background: {{penColor}};"></view>
+            <text class="width-name">细</text>
+          </view>
+          <view
+            class="width-item {{penWidth === 4 ? 'active' : ''}}"
+            data-width="4"
+            bindtap="selectWidth"
+          >
+            <view class="width-preview" style="height: 4px; background: {{penColor}};"></view>
+            <text class="width-name">中</text>
+          </view>
+          <view
+            class="width-item {{penWidth === 6 ? 'active' : ''}}"
+            data-width="6"
+            bindtap="selectWidth"
+          >
+            <view class="width-preview" style="height: 6px; background: {{penColor}};"></view>
+            <text class="width-name">粗</text>
+          </view>
+        </view>
+      </view>
+
+      <!-- 背景选择 -->
+      <view class="tool-group">
+        <text class="tool-label">背景</text>
+        <view class="bg-options">
+          <view
+            class="bg-item {{bgColor === '#FFFFFF' ? 'active' : ''}}"
+            data-bg="#FFFFFF"
+            bindtap="selectBackground"
+          >
+            <text class="bg-name">白色</text>
+          </view>
+          <view
+            class="bg-item {{bgColor === 'transparent' ? 'active' : ''}}"
+            data-bg="transparent"
+            bindtap="selectBackground"
+          >
+            <text class="bg-name">透明</text>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 操作按钮 -->
+  <view class="action-section">
+    <button class="clear-btn" bindtap="clearCanvas">
+      <text class="btn-text">清除重写</text>
+    </button>
+    <button class="save-image-btn" bindtap="saveAsImage" disabled="{{!hasSignature}}">
+      <text class="btn-text">保存为图片</text>
+    </button>
+    <button class="save-album-btn" bindtap="saveToAlbum" disabled="{{!hasSignature}}">
+      <text class="btn-text">保存到相册</text>
+    </button>
+  </view>
+
+  <!-- 使用提示 -->
+  <view class="tips-section">
+    <view class="tips-title">
+      <text class="tips-icon">💡</text>
+      <text class="tips-title-text">使用提示</text>
+    </view>
+    <view class="tips-content">
+      <text class="tips-item">• 用手指在签名区域书写即可</text>
+      <text class="tips-item">• 可选择不同颜色和粗细的画笔</text>
+      <text class="tips-item">• 支持透明背景，方便后期使用</text>
+      <text class="tips-item">• 签名可保存为图片到相册</text>
+      <text class="tips-item">• 横屏书写效果更佳</text>
+    </view>
+  </view>
+</view>

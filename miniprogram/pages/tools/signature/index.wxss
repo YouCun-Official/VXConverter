@@ -1,0 +1,361 @@
+/* pages/tools/signature/index.wxss */
+.container {
+  min-height: 100vh;
+  background: #f5f5f5;
+  padding: 30rpx;
+  box-sizing: border-box;
+  padding-bottom: 60rpx;
+}
+
+/* 分区标题 */
+.section-title {
+  margin-bottom: 20rpx;
+}
+
+.title-text {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #333;
+  position: relative;
+  padding-left: 20rpx;
+}
+
+.title-text::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 6rpx;
+  height: 28rpx;
+  background: linear-gradient(180deg, #4ade80 0%, #22c55e 100%);
+  border-radius: 3rpx;
+}
+
+/* 签名画板区域 */
+.canvas-section {
+  margin-bottom: 30rpx;
+}
+
+.canvas-card {
+  background: #ffffff;
+  border-radius: 20rpx;
+  padding: 40rpx;
+  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.06);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  min-height: 400rpx;
+}
+
+.signature-canvas {
+  width: 600rpx;
+  height: 400rpx;
+  border: 2rpx dashed #e0e0e0;
+  border-radius: 12rpx;
+  background: #fafafa;
+}
+
+.canvas-placeholder {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.emoji-icon {
+  font-size: 80rpx;
+  margin-bottom: 20rpx;
+  opacity: 0.3;
+}
+
+.placeholder-text {
+  font-size: 26rpx;
+  color: #999;
+}
+
+/* 工具栏 */
+.toolbar-section {
+  margin-bottom: 30rpx;
+}
+
+.toolbar-card {
+  background: #ffffff;
+  border-radius: 20rpx;
+  padding: 30rpx;
+  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.06);
+}
+
+.tool-group {
+  margin-bottom: 30rpx;
+}
+
+.tool-group:last-child {
+  margin-bottom: 0;
+}
+
+.tool-label {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #333;
+  display: block;
+  margin-bottom: 20rpx;
+}
+
+/* 颜色选项 */
+.color-options {
+  display: flex;
+  gap: 20rpx;
+}
+
+.color-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20rpx;
+  border-radius: 12rpx;
+  background: #f8f8f8;
+  border: 2rpx solid transparent;
+  transition: all 0.3s;
+}
+
+.color-item.active {
+  background: #f0fdf4;
+  border-color: #22c55e;
+}
+
+.color-dot {
+  width: 40rpx;
+  height: 40rpx;
+  border-radius: 50%;
+  margin-bottom: 12rpx;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.15);
+}
+
+.color-name {
+  font-size: 24rpx;
+  color: #666;
+}
+
+.color-item.active .color-name {
+  color: #22c55e;
+  font-weight: 600;
+}
+
+/* 粗细选项 */
+.width-options {
+  display: flex;
+  gap: 20rpx;
+}
+
+.width-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20rpx;
+  border-radius: 12rpx;
+  background: #f8f8f8;
+  border: 2rpx solid transparent;
+  transition: all 0.3s;
+}
+
+.width-item.active {
+  background: #f0fdf4;
+  border-color: #22c55e;
+}
+
+.width-preview {
+  width: 60rpx;
+  border-radius: 10rpx;
+  margin-bottom: 12rpx;
+}
+
+.width-name {
+  font-size: 24rpx;
+  color: #666;
+}
+
+.width-item.active .width-name {
+  color: #22c55e;
+  font-weight: 600;
+}
+
+/* 背景选项 */
+.bg-options {
+  display: flex;
+  gap: 20rpx;
+}
+
+.bg-item {
+  flex: 1;
+  padding: 20rpx;
+  text-align: center;
+  border-radius: 12rpx;
+  background: #f8f8f8;
+  border: 2rpx solid transparent;
+  transition: all 0.3s;
+}
+
+.bg-item.active {
+  background: #f0fdf4;
+  border-color: #22c55e;
+}
+
+.bg-name {
+  font-size: 26rpx;
+  color: #666;
+}
+
+.bg-item.active .bg-name {
+  color: #22c55e;
+  font-weight: 600;
+}
+
+/* 操作按钮 */
+.action-section {
+  margin-bottom: 30rpx;
+}
+
+.clear-btn {
+  width: 100%;
+  height: 96rpx;
+  background: #ffffff;
+  border: 2rpx solid #ef4444;
+  border-radius: 20rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20rpx;
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.06);
+}
+
+.clear-btn::after {
+  border: none;
+}
+
+.clear-btn:active {
+  opacity: 0.8;
+  transform: scale(0.98);
+}
+
+.clear-btn .btn-text {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #ef4444;
+}
+
+.save-image-btn {
+  width: 100%;
+  height: 96rpx;
+  background: linear-gradient(135deg, #4ade80 0%, #22c55e 100%);
+  border-radius: 20rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20rpx;
+  box-shadow: 0 8rpx 24rpx rgba(34, 197, 94, 0.3);
+  border: none;
+}
+
+.save-image-btn::after {
+  border: none;
+}
+
+.save-image-btn:active {
+  opacity: 0.9;
+  transform: scale(0.98);
+}
+
+.save-image-btn[disabled] {
+  background: #e0e0e0;
+  opacity: 0.5;
+  box-shadow: none;
+}
+
+.save-image-btn .btn-text {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.save-album-btn {
+  width: 100%;
+  height: 96rpx;
+  background: #ffffff;
+  border: 2rpx solid #22c55e;
+  border-radius: 20rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.06);
+}
+
+.save-album-btn::after {
+  border: none;
+}
+
+.save-album-btn:active {
+  opacity: 0.8;
+  transform: scale(0.98);
+}
+
+.save-album-btn[disabled] {
+  background: #f5f5f5;
+  border-color: #e0e0e0;
+  opacity: 0.5;
+}
+
+.save-album-btn .btn-text {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #22c55e;
+}
+
+.save-album-btn[disabled] .btn-text {
+  color: #999;
+}
+
+/* 使用提示 */
+.tips-section {
+  background: #f0fdf4;
+  border-radius: 20rpx;
+  padding: 30rpx;
+  border: 1rpx solid #dcfce7;
+}
+
+.tips-title {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20rpx;
+}
+
+.tips-icon {
+  font-size: 32rpx;
+  margin-right: 10rpx;
+}
+
+.tips-title-text {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #333;
+}
+
+.tips-content {
+  display: flex;
+  flex-direction: column;
+  gap: 12rpx;
+}
+
+.tips-item {
+  font-size: 26rpx;
+  color: #666;
+  line-height: 1.6;
+}

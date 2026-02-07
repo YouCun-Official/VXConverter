@@ -3,6 +3,8 @@
     "pages/converter/index",
     "pages/image-to-pdf/image-to-pdf",
     "pages/word-to-pdf/word-to-pdf",
+    "pages/tools/qrcode/index",
+    "pages/tools/signature/index",
     "pages/index/index",
     "pages/example/index"
   ],
@@ -10,7 +12,7 @@
     "backgroundColor": "#F6F6F6",
     "backgroundTextStyle": "light",
     "navigationBarBackgroundColor": "#16a34a",
-    "navigationBarTitleText": "文件格式转换器",
+    "navigationBarTitleText": "全能格式工具箱",
     "navigationBarTextStyle": "white"
   },
   "sitemapLocation": "sitemap.json",

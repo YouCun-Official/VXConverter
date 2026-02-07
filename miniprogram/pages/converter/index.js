@@ -143,5 +143,90 @@ Page({
             icon: 'none',
             duration: 2000
         });
+    },
+
+    navigateToESignature() {
+        wx.navigateTo({
+            url: '/pages/tools/signature/index'
+        });
+    },
+
+    navigateToQrCodeGenerator() {
+        wx.navigateTo({
+            url: '/pages/tools/qrcode/index'
+        });
+    },
+
+    navigateToIDPhotoResize() {
+        wx.showToast({
+            title: '功能开发中，敬请期待',
+            icon: 'none',
+            duration: 2000
+        });
+    },
+
+    // 多媒体处理功能
+    navigateToImageFormat() {
+        wx.showToast({
+            title: '功能开发中，敬请期待',
+            icon: 'none',
+            duration: 2000
+        });
+    },
+
+    navigateToVideoFormat() {
+        wx.showToast({
+            title: '功能开发中，敬请期待',
+            icon: 'none',
+            duration: 2000
+        });
+    },
+
+    navigateToAudioFormat() {
+        wx.showToast({
+            title: '功能开发中，敬请期待',
+            icon: 'none',
+            duration: 2000
+        });
+    },
+
+    navigateToVideoToAudio() {
+        wx.showToast({
+            title: '功能开发中，敬请期待',
+            icon: 'none',
+            duration: 2000
+        });
+    },
+
+    navigateToVideoCompress() {
+        wx.showToast({
+            title: '功能开发中，敬请期待',
+            icon: 'none',
+            duration: 2000
+        });
+    },
+
+    navigateToImageCompress() {
+        wx.showToast({
+            title: '功能开发中，敬请期待',
+            icon: 'none',
+            duration: 2000
+        });
+    },
+
+    navigateToVideoToGif() {
+        wx.showToast({
+            title: '功能开发中，敬请期待',
+            icon: 'none',
+            duration: 2000
+        });
+    },
+
+    navigateToAudioCompress() {
+        wx.showToast({
+            title: '功能开发中，敬请期待',
+            icon: 'none',
+            duration: 2000
+        });
     }
 });
