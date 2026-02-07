@@ -5,6 +5,7 @@
     "pages/word-to-pdf/word-to-pdf",
     "pages/tools/qrcode/index",
     "pages/tools/signature/index",
+    "pages/tools/image-compress/index",
     "pages/index/index",
     "pages/example/index"
   ],

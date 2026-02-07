@@ -1,0 +1,197 @@
+<!--pages/tools/image-compress/index.wxml-->
+<wxs module="utils">
+var formatPercent = function(value) {
+  return Math.round(value * 100);
+};
+module.exports = {
+  formatPercent: formatPercent
+};
+</wxs>
+
+<view class="container">
+
+  <!-- 顶部操作区 -->
+  <view class="action-section">
+    <button class="choose-btn" bindtap="chooseImages">
+      <text class="icon">📁</text>
+      <text>选择图片</text>
+    </button>
+    <text class="image-count">已选择 {{images.length}} 张</text>
+  </view>
+
+  <!-- 压缩设置 -->
+  <view class="settings-section">
+    <view class="section-title">🎚️ 压缩设置</view>
+
+    <!-- 质量滑块 -->
+    <view class="setting-item">
+      <view class="setting-label">
+        <text>压缩质量</text>
+        <text class="value">{{utils.formatPercent(quality)}}%</text>
+      </view>
+      <slider
+        value="{{quality}}"
+        min="0.1"
+        max="1"
+        step="0.05"
+        activeColor="#16a34a"
+        backgroundColor="#e5e5e5"
+        block-size="20"
+        bindchange="onQualityChange"
+      />
+
+      <!-- 质量预设按钮 -->
+      <view class="preset-buttons">
+        <block wx:for="{{qualityPresets}}" wx:key="value">
+          <button
+            size="mini"
+            class="preset-btn {{quality === item.value ? 'active' : ''}}"
+            data-quality="{{item.value}}"
+            bindtap="selectQualityPreset"
+          >
+            <text>{{item.icon}} {{item.label}}</text>
+          </button>
+        </block>
+      </view>
+    </view>
+
+    <!-- 尺寸选项 -->
+    <view class="setting-item">
+      <view class="setting-label">
+        <text>尺寸调整</text>
+      </view>
+      <picker
+        mode="selector"
+        range="{{resizeOptions}}"
+        range-key="label"
+        value="{{resizeIndex}}"
+        bindchange="onResizeChange"
+      >
+        <view class="picker">
+          <text>{{resizeOptions[resizeIndex].label}}</text>
+          <text class="picker-arrow">▼</text>
+        </view>
+      </picker>
+    </view>
+
+    <!-- 格式选项 -->
+    <view class="setting-item">
+      <view class="setting-label">
+        <text>输出格式</text>
+      </view>
+      <picker
+        mode="selector"
+        range="{{formatOptions}}"
+        range-key="label"
+        value="{{formatIndex}}"
+        bindchange="onFormatChange"
+      >
+        <view class="picker">
+          <text>{{formatOptions[formatIndex].icon}} {{formatOptions[formatIndex].label}}</text>
+          <text class="picker-arrow">▼</text>
+        </view>
+      </picker>
+    </view>
+
+    <!-- 统计信息 -->
+    <view class="stats" wx:if="{{totalCompressedSize > 0}}">
+      <view class="stat-item">
+        <text class="stat-label">总计压缩:</text>
+        <text class="stat-value">{{overallRatio}}%</text>
+      </view>
+      <view class="stat-item">
+        <text class="stat-label">原始大小:</text>
+        <text class="stat-value">{{formatSize(totalOriginalSize)}}</text>
+      </view>
+      <view class="stat-item">
+        <text class="stat-label">压缩后:</text>
+        <text class="stat-value">{{formatSize(totalCompressedSize)}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 图片列表 -->
+  <view class="images-section" wx:if="{{images.length > 0}}">
+    <view class="images-header">
+      <text class="images-title">图片列表</text>
+    </view>
+
+    <scroll-view scroll-y class="images-scroll">
+      <block wx:for="{{images}}" wx:key="index">
+        <view class="image-card">
+          <image
+            class="preview"
+            src="{{item.path}}"
+            mode="aspectFill"
+          />
+
+          <view class="image-info">
+            <view class="size-info">
+              <text class="original-size">{{formatSize(item.originalSize)}}</text>
+              <text class="arrow" wx:if="{{item.compressedSize}}">→</text>
+              <text class="compressed-size" wx:if="{{item.compressedSize}}">
+                {{formatSize(item.compressedSize)}}
+              </text>
+            </view>
+
+            <view class="dimension-info">
+              <text class="dimension">{{item.width}}×{{item.height}}</text>
+            </view>
+
+            <view class="ratio-badge" wx:if="{{item.ratio}}">
+              <text class="badge">-{{item.ratio}}%</text>
+            </view>
+          </view>
+
+          <view class="image-actions">
+            <button
+              wx:if="{{item.compressedPath}}"
+              size="mini"
+              class="save-btn"
+              bindtap="saveSingleImage"
+              data-index="{{index}}"
+            >
+              保存
+            </button>
+            <button
+              size="mini"
+              class="delete-btn"
+              bindtap="deleteImage"
+              data-index="{{index}}"
+            >
+              删除
+            </button>
+          </view>
+        </view>
+      </block>
+    </scroll-view>
+  </view>
+
+  <!-- 空状态 -->
+  <view class="empty-state" wx:else>
+    <text class="empty-emoji">🖼️</text>
+    <text class="empty-tip">点击上方按钮选择图片</text>
+    <text class="empty-desc">支持一次选择最多9张图片</text>
+  </view>
+
+  <!-- 底部操作按钮 -->
+  <view class="bottom-actions" wx:if="{{images.length > 0}}">
+    <button
+      class="compress-btn"
+      bindtap="startCompress"
+      disabled="{{isCompressing}}"
+      loading="{{isCompressing}}"
+    >
+      {{isCompressing ? '压缩中 ' + compressProgress + '%' : '开始压缩'}}
+    </button>
+
+    <button
+      class="save-all-btn"
+      bindtap="saveAllToAlbum"
+      disabled="{{totalCompressedSize === 0}}"
+    >
+      保存全部
+    </button>
+  </view>
+
+</view>

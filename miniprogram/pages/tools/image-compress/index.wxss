@@ -1,0 +1,370 @@
+/* pages/tools/image-compress/index.wxss */
+
+/* 继承项目配色方案 */
+page {
+  --primary-color: #16a34a;
+  --card-bg: #ffffff;
+  --text-primary: #333333;
+  --text-secondary: #666666;
+  --border-color: #e5e5e5;
+  --bg-color: #f5f5f5;
+}
+
+.container {
+  min-height: 100vh;
+  background: var(--bg-color);
+  padding-bottom: 140rpx;
+}
+
+/* ============ 操作区 ============ */
+.action-section {
+  background: var(--card-bg);
+  padding: 30rpx;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 2rpx solid var(--border-color);
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.05);
+}
+
+.choose-btn {
+  background: var(--primary-color);
+  color: white;
+  border-radius: 12rpx;
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+  padding: 18rpx 24rpx;
+  font-size: 28rpx;
+  border: none;
+  flex-shrink: 0;
+  width: auto;
+}
+
+.choose-btn::after {
+  border: none;
+}
+
+.icon {
+  font-size: 36rpx;
+}
+
+.image-count {
+  color: var(--text-secondary);
+  font-size: 28rpx;
+}
+
+/* ============ 设置区 ============ */
+.settings-section {
+  background: var(--card-bg);
+  margin: 20rpx;
+  padding: 30rpx;
+  border-radius: 16rpx;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.08);
+}
+
+.section-title {
+  font-size: 32rpx;
+  font-weight: bold;
+  margin-bottom: 30rpx;
+  color: var(--text-primary);
+}
+
+.setting-item {
+  margin-bottom: 40rpx;
+}
+
+.setting-item:last-child {
+  margin-bottom: 0;
+}
+
+.setting-label {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20rpx;
+  font-size: 28rpx;
+  color: var(--text-primary);
+}
+
+.value {
+  color: var(--primary-color);
+  font-weight: bold;
+}
+
+slider {
+  width: 90%;
+  margin: 0 auto 10rpx auto;
+  display: block;
+}
+
+/* 预设按钮 */
+.preset-buttons {
+  display: flex;
+  gap: 15rpx;
+  margin-top: 20rpx;
+}
+
+.preset-btn {
+  flex: 1;
+  background: #f0f0f0;
+  border: 2rpx solid #e0e0e0;
+  font-size: 22rpx;
+  color: var(--text-secondary);
+  padding: 12rpx 6rpx;
+  border-radius: 8rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.preset-btn::after {
+  border: none;
+}
+
+.preset-btn.active {
+  background: var(--primary-color);
+  color: white;
+  border-color: var(--primary-color);
+}
+
+/* 选择器 */
+.picker {
+  padding: 24rpx;
+  background: #f5f5f5;
+  border-radius: 12rpx;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 28rpx;
+  color: var(--text-primary);
+}
+
+.picker-arrow {
+  color: var(--text-secondary);
+  font-size: 20rpx;
+}
+
+/* 统计信息 */
+.stats {
+  background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+  padding: 25rpx;
+  border-radius: 12rpx;
+  margin-top: 30rpx;
+  border-left: 6rpx solid var(--primary-color);
+}
+
+.stat-item {
+  display: flex;
+  justify-content: space-between;
+  margin: 12rpx 0;
+  font-size: 28rpx;
+}
+
+.stat-label {
+  color: var(--text-secondary);
+}
+
+.stat-value {
+  color: var(--primary-color);
+  font-weight: bold;
+}
+
+/* ============ 图片列表 ============ */
+.images-section {
+  margin: 20rpx;
+}
+
+.images-header {
+  margin-bottom: 15rpx;
+}
+
+.images-title {
+  font-size: 28rpx;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.images-scroll {
+  max-height: 900rpx;
+}
+
+.image-card {
+  background: var(--card-bg);
+  border-radius: 16rpx;
+  padding: 20rpx;
+  margin-bottom: 15rpx;
+  display: flex;
+  align-items: center;
+  gap: 20rpx;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.06);
+}
+
+.preview {
+  width: 140rpx;
+  height: 140rpx;
+  border-radius: 12rpx;
+  flex-shrink: 0;
+}
+
+.image-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 10rpx;
+}
+
+.size-info {
+  display: flex;
+  align-items: center;
+  gap: 10rpx;
+  font-size: 26rpx;
+}
+
+.original-size {
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.arrow {
+  color: var(--primary-color);
+  font-weight: bold;
+  font-size: 24rpx;
+}
+
+.compressed-size {
+  color: var(--primary-color);
+  font-weight: bold;
+}
+
+.dimension-info {
+  font-size: 24rpx;
+  color: #999;
+}
+
+.ratio-badge {
+  display: inline-block;
+}
+
+.badge {
+  background: #dcfce7;
+  color: var(--primary-color);
+  padding: 6rpx 16rpx;
+  border-radius: 20rpx;
+  font-size: 24rpx;
+  font-weight: bold;
+  display: inline-block;
+}
+
+.image-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10rpx;
+  flex-shrink: 0;
+}
+
+.save-btn {
+  background: var(--primary-color);
+  color: white;
+  font-size: 24rpx;
+  padding: 10rpx 20rpx;
+  border-radius: 8rpx;
+}
+
+.save-btn::after {
+  border: none;
+}
+
+.delete-btn {
+  background: #fee;
+  color: #e11d48;
+  font-size: 24rpx;
+  padding: 10rpx 20rpx;
+  border-radius: 8rpx;
+}
+
+.delete-btn::after {
+  border: none;
+}
+
+/* ============ 空状态 ============ */
+.empty-state {
+  text-align: center;
+  padding: 120rpx 40rpx;
+}
+
+.empty-emoji {
+  font-size: 140rpx;
+  display: block;
+  margin-bottom: 30rpx;
+  opacity: 0.8;
+}
+
+.empty-tip {
+  color: var(--text-secondary);
+  font-size: 32rpx;
+  display: block;
+  margin-bottom: 15rpx;
+  font-weight: 500;
+}
+
+.empty-desc {
+  color: #999;
+  font-size: 26rpx;
+  display: block;
+}
+
+/* ============ 底部按钮 ============ */
+.bottom-actions {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: var(--card-bg);
+  padding: 20rpx;
+  border-top: 2rpx solid var(--border-color);
+  display: flex;
+  gap: 20rpx;
+  box-shadow: 0 -4rpx 16rpx rgba(0, 0, 0, 0.08);
+  z-index: 100;
+}
+
+.compress-btn {
+  flex: 2;
+  background: var(--primary-color);
+  color: white;
+  border-radius: 12rpx;
+  font-size: 32rpx;
+  font-weight: bold;
+  height: 88rpx;
+  line-height: 88rpx;
+  border: none;
+}
+
+.compress-btn::after {
+  border: none;
+}
+
+.compress-btn[disabled] {
+  background: #ccc;
+}
+
+.save-all-btn {
+  flex: 1;
+  background: #f5f5f5;
+  color: var(--text-primary);
+  border-radius: 12rpx;
+  font-size: 30rpx;
+  height: 88rpx;
+  line-height: 88rpx;
+  border: 2rpx solid var(--border-color);
+}
+
+.save-all-btn::after {
+  border: none;
+}
+
+.save-all-btn[disabled] {
+  opacity: 0.5;
+}
