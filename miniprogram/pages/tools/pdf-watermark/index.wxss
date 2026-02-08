@@ -1,0 +1,435 @@
+/* pages/tools/pdf-watermark/index.wxss */
+
+.container {
+  min-height: 100vh;
+  background: #ffffff;
+  padding: 20rpx;
+  padding-bottom: 40rpx;
+}
+
+/* 文件选择区 */
+.upload-section {
+  margin-bottom: 30rpx;
+}
+
+.upload-box {
+  background: white;
+  border-radius: 20rpx;
+  padding: 60rpx 30rpx;
+  min-height: 260rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8rpx 30rpx rgba(0, 0, 0, 0.15);
+}
+
+.upload-icon {
+  font-size: 80rpx;
+  margin-bottom: 20rpx;
+}
+
+.upload-text {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 15rpx;
+}
+
+.upload-hint {
+  font-size: 24rpx;
+  color: #999;
+  text-align: center;
+  margin-bottom: 5rpx;
+}
+
+/* 文件信息 */
+.file-section {
+  margin-bottom: 30rpx;
+}
+
+.file-card {
+  background: white;
+  border-radius: 20rpx;
+  padding: 25rpx;
+  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.1);
+}
+
+.file-header {
+  display: flex;
+  align-items: center;
+}
+
+.file-icon {
+  font-size: 48rpx;
+  margin-right: 20rpx;
+}
+
+.file-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.file-name {
+  font-size: 28rpx;
+  color: #333;
+  font-weight: 500;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  margin-bottom: 8rpx;
+}
+
+.file-size {
+  font-size: 24rpx;
+  color: #999;
+}
+
+.file-actions {
+  display: flex;
+  gap: 10rpx;
+}
+
+.action-btn {
+  padding: 12rpx 20rpx;
+  border-radius: 10rpx;
+  font-size: 24rpx;
+  font-weight: 500;
+}
+
+.change-btn {
+  background: #3b82f6;
+  color: white;
+}
+
+.delete-btn {
+  background: #ef4444;
+  color: white;
+  width: 60rpx;
+  text-align: center;
+}
+
+/* 设置区域 */
+.settings-section {
+  background: white;
+  border-radius: 20rpx;
+  padding: 30rpx;
+  margin-bottom: 30rpx;
+  box-shadow: 0 8rpx 30rpx rgba(0, 0, 0, 0.1);
+}
+
+.section-title {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 25rpx;
+}
+
+/* 预设样式 */
+.presets-box {
+  background: #f9fafb;
+  border-radius: 15rpx;
+  padding: 20rpx;
+  margin-bottom: 30rpx;
+}
+
+.presets-title {
+  font-size: 26rpx;
+  color: #666;
+  margin-bottom: 15rpx;
+  display: block;
+}
+
+.presets-buttons {
+  display: flex;
+  gap: 15rpx;
+  flex-wrap: wrap;
+}
+
+.preset-btn {
+  flex: 1;
+  min-width: 150rpx;
+  padding: 18rpx;
+  background: white;
+  border-radius: 10rpx;
+  text-align: center;
+  font-size: 26rpx;
+  color: #333;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.05);
+}
+
+/* 设置项 */
+.setting-item {
+  margin-bottom: 30rpx;
+}
+
+.setting-item:last-child {
+  margin-bottom: 0;
+}
+
+.setting-label {
+  display: block;
+  font-size: 28rpx;
+  color: #666;
+  margin-bottom: 15rpx;
+}
+
+.setting-input {
+  width: 100%;
+  padding: 20rpx 30rpx;
+  background: #f3f4f6;
+  border-radius: 10rpx;
+  font-size: 28rpx;
+  color: #333;
+}
+
+.setting-slider {
+  width: 100%;
+  margin-top: 10rpx;
+}
+
+.setting-picker {
+  width: 100%;
+}
+
+.picker-display {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20rpx 30rpx;
+  background: #f3f4f6;
+  border-radius: 10rpx;
+  font-size: 28rpx;
+  color: #333;
+}
+
+.picker-arrow {
+  color: #999;
+  font-size: 24rpx;
+}
+
+/* 颜色选择 */
+.color-options {
+  display: flex;
+  gap: 20rpx;
+  margin-top: 15rpx;
+}
+
+.color-btn {
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.15);
+  position: relative;
+}
+
+.color-btn.active {
+  box-shadow: 0 4rpx 15rpx rgba(0, 0, 0, 0.3);
+  transform: scale(1.1);
+}
+
+.color-check {
+  font-size: 36rpx;
+  color: white;
+  font-weight: bold;
+  text-shadow: 0 0 4rpx rgba(0, 0, 0, 0.5);
+}
+
+/* 预览区域 */
+.preview-box {
+  margin-top: 30rpx;
+  padding-top: 30rpx;
+  border-top: 1rpx solid #e5e7eb;
+}
+
+.preview-title {
+  font-size: 26rpx;
+  color: #666;
+  display: block;
+  margin-bottom: 15rpx;
+}
+
+.preview-area {
+  width: 100%;
+  height: 300rpx;
+  background: #f9fafb;
+  border-radius: 15rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  position: relative;
+}
+
+.preview-watermark {
+  font-weight: bold;
+  white-space: nowrap;
+  user-select: none;
+  pointer-events: none;
+}
+
+/* 操作按钮 */
+.action-section {
+  margin-bottom: 30rpx;
+}
+
+.process-btn {
+  width: 100%;
+  background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
+  color: white;
+  font-size: 32rpx;
+  font-weight: bold;
+  border-radius: 20rpx;
+  padding: 30rpx;
+  border: none;
+  box-shadow: 0 8rpx 25rpx rgba(22, 163, 74, 0.4);
+}
+
+.process-btn[disabled] {
+  opacity: 0.5;
+  box-shadow: none;
+}
+
+.tips-text {
+  text-align: center;
+  margin-top: 20rpx;
+  padding: 15rpx;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 10rpx;
+  font-size: 26rpx;
+  color: #666;
+}
+
+/* 结果区域 */
+.result-section {
+  margin-bottom: 30rpx;
+}
+
+.result-card {
+  background: white;
+  border-radius: 20rpx;
+  padding: 30rpx;
+  box-shadow: 0 8rpx 30rpx rgba(0, 0, 0, 0.15);
+}
+
+.result-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20rpx;
+}
+
+.result-icon {
+  font-size: 48rpx;
+  margin-right: 15rpx;
+}
+
+.result-title {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #16a34a;
+}
+
+.result-info {
+  margin-bottom: 25rpx;
+}
+
+.result-text {
+  font-size: 28rpx;
+  color: #666;
+}
+
+.result-actions {
+  display: flex;
+  gap: 15rpx;
+}
+
+.result-btn {
+  flex: 1;
+  font-size: 28rpx;
+  font-weight: bold;
+  border-radius: 15rpx;
+  padding: 25rpx;
+  border: none;
+}
+
+.download-btn {
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  color: white;
+}
+
+/* 空状态 */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 80rpx 40rpx;
+  background: white;
+  border-radius: 20rpx;
+  margin-bottom: 30rpx;
+  box-shadow: 0 8rpx 30rpx rgba(0, 0, 0, 0.1);
+}
+
+.empty-icon {
+  font-size: 120rpx;
+  margin-bottom: 30rpx;
+  opacity: 0.6;
+}
+
+.empty-text {
+  font-size: 32rpx;
+  color: #666;
+  margin-bottom: 15rpx;
+  font-weight: bold;
+}
+
+.empty-hint {
+  font-size: 26rpx;
+  color: #999;
+  text-align: center;
+}
+
+/* 使用说明 */
+.guide-section {
+  background: white;
+  border-radius: 20rpx;
+  padding: 30rpx;
+  box-shadow: 0 8rpx 30rpx rgba(0, 0, 0, 0.1);
+}
+
+.guide-title {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 25rpx;
+}
+
+.guide-item {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 20rpx;
+}
+
+.guide-item:last-child {
+  margin-bottom: 0;
+}
+
+.guide-step {
+  font-size: 32rpx;
+  color: #16a34a;
+  margin-right: 15rpx;
+  font-weight: bold;
+  line-height: 40rpx;
+}
+
+.guide-text {
+  flex: 1;
+  font-size: 28rpx;
+  color: #666;
+  line-height: 40rpx;
+}

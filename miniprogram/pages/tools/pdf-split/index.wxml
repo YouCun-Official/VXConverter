@@ -1,0 +1,242 @@
+<!--pages/tools/pdf-split/index.wxml-->
+<wxs module="utils">
+  var formatSize = function(bytes) {
+    if (bytes === 0) return '0 B';
+    var k = 1024;
+    var sizes = ['B', 'KB', 'MB', 'GB'];
+    var i = Math.floor(Math.log(bytes) / Math.log(k));
+    return (bytes / Math.pow(k, i)).toFixed(2) + ' ' + sizes[i];
+  };
+
+  module.exports = {
+    formatSize: formatSize
+  };
+</wxs>
+
+<view class="container">
+
+  <!-- 选择文件区 -->
+  <view class="upload-section" wx:if="{{!pdfFile}}">
+    <view class="upload-box" bindtap="choosePDF">
+      <text class="upload-icon">✂️</text>
+      <text class="upload-text">选择PDF文件</text>
+      <text class="upload-hint">点击选择要拆分的PDF</text>
+      <text class="upload-hint">文件大小不超过100MB</text>
+    </view>
+  </view>
+
+  <!-- PDF文件信息 -->
+  <view class="file-section" wx:if="{{pdfFile}}">
+    <view class="file-card">
+      <view class="file-header">
+        <text class="file-icon">📄</text>
+        <view class="file-info">
+          <text class="file-name">{{pdfFile.name}}</text>
+          <text class="file-meta">{{utils.formatSize(pdfFile.size)}} | 共{{pageCount}}页</text>
+        </view>
+        <view class="file-actions">
+          <view class="action-btn change-btn" bindtap="choosePDF">
+            <text>更换</text>
+          </view>
+          <view class="action-btn delete-btn" bindtap="deletePDF">
+            <text>✕</text>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 拆分模式选择 -->
+  <view class="mode-section" wx:if="{{pdfFile}}">
+    <view class="section-title">📋 拆分模式</view>
+    <radio-group class="mode-group" bindchange="onModeChange">
+      <label class="mode-item {{splitMode === item.value ? 'active' : ''}}"
+             wx:for="{{modeOptions}}" wx:key="value">
+        <radio value="{{item.value}}" checked="{{splitMode === item.value}}" color="#16a34a"/>
+        <text class="mode-icon">{{item.icon}}</text>
+        <text class="mode-label">{{item.label}}</text>
+      </label>
+    </radio-group>
+  </view>
+
+  <!-- 范围拆分设置 -->
+  <view class="split-section" wx:if="{{pdfFile && splitMode === 'range'}}">
+    <view class="section-title">🎯 设置拆分范围</view>
+
+    <!-- 页码输入 -->
+    <view class="range-input-box">
+      <view class="input-group">
+        <text class="input-label">起始页</text>
+        <input class="page-input"
+               type="number"
+               value="{{startPage}}"
+               bindinput="onStartPageInput"
+               placeholder="1"/>
+      </view>
+      <text class="range-separator">-</text>
+      <view class="input-group">
+        <text class="input-label">结束页</text>
+        <input class="page-input"
+               type="number"
+               value="{{endPage}}"
+               bindinput="onEndPageInput"
+               placeholder="{{pageCount}}"/>
+      </view>
+      <button class="add-btn" bindtap="addRange">添加</button>
+    </view>
+
+    <!-- 范围列表 -->
+    <view class="ranges-list" wx:if="{{ranges.length > 0}}">
+      <view class="list-header">
+        <text class="list-title">已添加范围 ({{ranges.length}})</text>
+        <text class="clear-btn" bindtap="clearRanges">清空</text>
+      </view>
+
+      <view class="range-item" wx:for="{{ranges}}" wx:key="id">
+        <view class="range-badge">{{index + 1}}</view>
+        <text class="range-text">{{item.name}}</text>
+        <view class="range-delete" bindtap="deleteRange" data-id="{{item.id}}">
+          <text>✕</text>
+        </view>
+      </view>
+    </view>
+
+    <view class="empty-tip" wx:if="{{ranges.length === 0}}">
+      <text>还未添加拆分范围，请输入页码后点击"添加"</text>
+    </view>
+  </view>
+
+  <!-- 单页拆分说明 -->
+  <view class="info-section" wx:if="{{pdfFile && splitMode === 'single'}}">
+    <view class="info-card">
+      <text class="info-icon">ℹ️</text>
+      <view class="info-content">
+        <text class="info-title">单页拆分模式</text>
+        <text class="info-desc">将PDF的每一页独立保存为一个文件</text>
+        <text class="info-detail">将生成 {{pageCount}} 个PDF文件</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 平均拆分设置 -->
+  <view class="split-section" wx:if="{{pdfFile && splitMode === 'average'}}">
+    <view class="section-title">⚖️ 平均拆分设置</view>
+
+    <view class="average-box">
+      <text class="average-label">拆分成几份：</text>
+      <slider class="average-slider"
+              min="2" max="{{pageCount}}"
+              value="{{splitCount}}"
+              bindchange="onSplitCountChange"
+              activeColor="#16a34a"
+              backgroundColor="#e5e7eb"
+              show-value
+              block-size="20"/>
+    </view>
+
+    <view class="average-preview">
+      <text class="preview-label">预计效果：</text>
+      <text class="preview-text">每份约 {{Math.ceil(pageCount / splitCount)}} 页</text>
+    </view>
+  </view>
+
+  <!-- 奇偶拆分设置 -->
+  <view class="split-section" wx:if="{{pdfFile && splitMode === 'oddeven'}}">
+    <view class="section-title">🔀 奇偶页拆分</view>
+
+    <radio-group class="oddeven-group" bindchange="onOddEvenChange">
+      <label class="oddeven-item">
+        <radio value="odd" checked="{{oddEvenMode === 'odd'}}" color="#16a34a"/>
+        <text class="oddeven-label">提取奇数页 (1, 3, 5...)</text>
+      </label>
+      <label class="oddeven-item">
+        <radio value="even" checked="{{oddEvenMode === 'even'}}" color="#16a34a"/>
+        <text class="oddeven-label">提取偶数页 (2, 4, 6...)</text>
+      </label>
+    </radio-group>
+
+    <view class="oddeven-preview">
+      <text class="preview-text">将提取 {{oddEvenMode === 'odd' ? Math.ceil(pageCount / 2) : Math.floor(pageCount / 2)}} 页</text>
+    </view>
+  </view>
+
+  <!-- 拆分按钮 -->
+  <view class="action-section" wx:if="{{pdfFile}}">
+    <button class="split-btn"
+            bindtap="startSplit"
+            disabled="{{isProcessing}}"
+            loading="{{isProcessing}}">
+      {{isProcessing ? '拆分中...' : '开始拆分'}}
+    </button>
+  </view>
+
+  <!-- 结果区域 -->
+  <view class="result-section" wx:if="{{resultFiles.length > 0}}">
+    <view class="section-title">✅ 拆分完成</view>
+
+    <view class="result-card">
+      <view class="result-header">
+        <text class="result-icon">📦</text>
+        <text class="result-title">已生成 {{resultFiles.length}} 个文件</text>
+      </view>
+
+      <view class="result-list">
+        <view class="result-item" wx:for="{{resultFiles}}" wx:key="index">
+          <view class="result-index">{{index + 1}}</view>
+          <view class="result-info">
+            <text class="result-name">{{item.name}}</text>
+            <text class="result-range">{{item.pageRange}}</text>
+          </view>
+          <button class="download-btn" bindtap="downloadFile" data-index="{{index}}">
+            打开
+          </button>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 空状态 -->
+  <view class="empty-state" wx:if="{{!pdfFile}}">
+    <text class="empty-icon">✂️</text>
+    <text class="empty-text">还没有选择文件</text>
+    <text class="empty-hint">点击上方按钮选择PDF文件</text>
+  </view>
+
+  <!-- 使用说明 -->
+  <view class="guide-section" wx:if="{{!pdfFile}}">
+    <view class="guide-title">📖 拆分模式说明</view>
+
+    <view class="guide-item">
+      <text class="guide-icon">📑</text>
+      <view class="guide-content">
+        <text class="guide-label">范围拆分</text>
+        <text class="guide-desc">自定义多个页码范围，灵活拆分</text>
+      </view>
+    </view>
+
+    <view class="guide-item">
+      <text class="guide-icon">📄</text>
+      <view class="guide-content">
+        <text class="guide-label">单页拆分</text>
+        <text class="guide-desc">每一页独立保存，适合提取特定页</text>
+      </view>
+    </view>
+
+    <view class="guide-item">
+      <text class="guide-icon">⚖️</text>
+      <view class="guide-content">
+        <text class="guide-label">平均拆分</text>
+        <text class="guide-desc">自动平均分成N份，页数均匀分配</text>
+      </view>
+    </view>
+
+    <view class="guide-item">
+      <text class="guide-icon">🔀</text>
+      <view class="guide-content">
+        <text class="guide-label">奇偶拆分</text>
+        <text class="guide-desc">分别提取奇数页或偶数页</text>
+      </view>
+    </view>
+  </view>
+
+</view>

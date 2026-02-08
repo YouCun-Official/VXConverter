@@ -1,0 +1,225 @@
+<!--pages/tools/pdf-watermark/index.wxml-->
+<wxs module="utils">
+  var formatSize = function(bytes) {
+    if (bytes === 0) return '0 B';
+    var k = 1024;
+    var sizes = ['B', 'KB', 'MB', 'GB'];
+    var i = Math.floor(Math.log(bytes) / Math.log(k));
+    return (bytes / Math.pow(k, i)).toFixed(2) + ' ' + sizes[i];
+  };
+
+  module.exports = {
+    formatSize: formatSize
+  };
+</wxs>
+
+<view class="container">
+
+  <!-- 选择文件区 -->
+  <view class="upload-section" wx:if="{{!pdfFile}}">
+    <view class="upload-box" bindtap="choosePDF">
+      <text class="upload-icon">💧</text>
+      <text class="upload-text">选择PDF文件</text>
+      <text class="upload-hint">点击选择要添加水印的PDF</text>
+      <text class="upload-hint">文件大小不超过50MB</text>
+    </view>
+  </view>
+
+  <!-- PDF文件信息 -->
+  <view class="file-section" wx:if="{{pdfFile}}">
+    <view class="file-card">
+      <view class="file-header">
+        <text class="file-icon">📄</text>
+        <view class="file-info">
+          <text class="file-name">{{pdfFile.name}}</text>
+          <text class="file-size">{{utils.formatSize(pdfFile.size)}}</text>
+        </view>
+        <view class="file-actions">
+          <view class="action-btn change-btn" bindtap="choosePDF">
+            <text>更换</text>
+          </view>
+          <view class="action-btn delete-btn" bindtap="deletePDF">
+            <text>✕</text>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 水印设置 -->
+  <view class="settings-section" wx:if="{{pdfFile}}">
+    <view class="section-title">⚙️ 水印设置</view>
+
+    <!-- 预设样式 -->
+    <view class="presets-box">
+      <text class="presets-title">快速预设：</text>
+      <view class="presets-buttons">
+        <view class="preset-btn" bindtap="applyPreset" data-preset="confidential">
+          🔒 机密
+        </view>
+        <view class="preset-btn" bindtap="applyPreset" data-preset="draft">
+          📝 草稿
+        </view>
+        <view class="preset-btn" bindtap="applyPreset" data-preset="sample">
+          📋 样本
+        </view>
+        <view class="preset-btn" bindtap="applyPreset" data-preset="copy">
+          📑 副本
+        </view>
+      </view>
+    </view>
+
+    <!-- 水印文字 -->
+    <view class="setting-item">
+      <text class="setting-label">水印文字</text>
+      <input class="setting-input"
+             type="text"
+             value="{{watermarkText}}"
+             placeholder="请输入水印文字"
+             bindinput="onWatermarkInput"
+             maxlength="30"/>
+    </view>
+
+    <!-- 字体大小 -->
+    <view class="setting-item">
+      <text class="setting-label">字体大小: {{fontSize}}px</text>
+      <slider class="setting-slider"
+              min="20" max="120"
+              value="{{fontSize}}"
+              bindchange="onFontSizeChange"
+              activeColor="#16a34a"
+              backgroundColor="#e5e7eb"
+              block-size="20"/>
+    </view>
+
+    <!-- 透明度 -->
+    <view class="setting-item">
+      <text class="setting-label">透明度: {{opacityPercent}}%</text>
+      <slider class="setting-slider"
+              min="10" max="80"
+              value="{{opacity * 100}}"
+              bindchange="onOpacityChange"
+              activeColor="#16a34a"
+              backgroundColor="#e5e7eb"
+              block-size="20"/>
+    </view>
+
+    <!-- 旋转角度 -->
+    <view class="setting-item">
+      <text class="setting-label">旋转角度: {{rotation}}°</text>
+      <slider class="setting-slider"
+              min="-90" max="90"
+              value="{{rotation}}"
+              bindchange="onRotationChange"
+              activeColor="#16a34a"
+              backgroundColor="#e5e7eb"
+              block-size="20"/>
+    </view>
+
+    <!-- 水印位置 -->
+    <view class="setting-item">
+      <text class="setting-label">水印位置</text>
+      <picker class="setting-picker" mode="selector"
+              range="{{positionOptions}}" range-key="label"
+              value="{{positionIndex}}"
+              bindchange="onPositionChange">
+        <view class="picker-display">
+          <text>{{positionOptions[positionIndex].label}}</text>
+          <text class="picker-arrow">▼</text>
+        </view>
+      </picker>
+    </view>
+
+    <!-- 水印颜色 -->
+    <view class="setting-item">
+      <text class="setting-label">水印颜色</text>
+      <view class="color-options">
+        <view class="color-btn {{color === item.value ? 'active' : ''}}"
+              wx:for="{{colorOptions}}" wx:key="value"
+              style="background-color: {{item.value}};"
+              bindtap="onColorChange"
+              data-color="{{item.value}}">
+          <text class="color-check" wx:if="{{color === item.value}}">✓</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 预览效果 -->
+    <view class="preview-box">
+      <text class="preview-title">预览效果：</text>
+      <view class="preview-area">
+        <text class="preview-watermark"
+              style="font-size: {{fontSize / 3}}rpx; opacity: {{opacity}}; color: {{color}}; transform: rotate({{rotation}}deg);">
+          {{watermarkText}}
+        </text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 操作按钮 -->
+  <view class="action-section" wx:if="{{pdfFile}}">
+    <button class="process-btn"
+            bindtap="startAddWatermark"
+            disabled="{{isProcessing || !watermarkText}}"
+            loading="{{isProcessing}}">
+      {{isProcessing ? '处理中 ' + processProgress + '%' : '添加水印'}}
+    </button>
+
+    <view class="tips-text" wx:if="{{!watermarkText}}">
+      请输入水印文字
+    </view>
+  </view>
+
+  <!-- 结果区域 -->
+  <view class="result-section" wx:if="{{resultFileID}}">
+    <view class="result-card">
+      <view class="result-header">
+        <text class="result-icon">✅</text>
+        <text class="result-title">水印添加完成</text>
+      </view>
+
+      <view class="result-info">
+        <text class="result-text">已为PDF添加水印：{{watermarkText}}</text>
+      </view>
+
+      <view class="result-actions">
+        <button class="result-btn download-btn" bindtap="downloadResult">
+          📥 打开文件
+        </button>
+      </view>
+    </view>
+  </view>
+
+  <!-- 空状态 -->
+  <view class="empty-state" wx:if="{{!pdfFile}}">
+    <text class="empty-icon">💧</text>
+    <text class="empty-text">还没有选择文件</text>
+    <text class="empty-hint">点击上方按钮选择PDF文件</text>
+  </view>
+
+  <!-- 使用说明 -->
+  <view class="guide-section" wx:if="{{!pdfFile}}">
+    <view class="guide-title">📖 功能说明</view>
+    <view class="guide-item">
+      <text class="guide-step">•</text>
+      <text class="guide-text">支持自定义水印文字内容</text>
+    </view>
+    <view class="guide-item">
+      <text class="guide-step">•</text>
+      <text class="guide-text">可调整字体大小、透明度、颜色</text>
+    </view>
+    <view class="guide-item">
+      <text class="guide-step">•</text>
+      <text class="guide-text">支持旋转角度和位置选择</text>
+    </view>
+    <view class="guide-item">
+      <text class="guide-step">•</text>
+      <text class="guide-text">提供快速预设样式（机密/草稿/样本）</text>
+    </view>
+    <view class="guide-item">
+      <text class="guide-step">•</text>
+      <text class="guide-text">实时预览水印效果</text>
+    </view>
+  </view>
+
+</view>

@@ -58,10 +58,8 @@ Page({
      * PDF操作功能导航方法
      */
     navigateToPdfMerge() {
-        wx.showToast({
-            title: '功能开发中，敬请期待',
-            icon: 'none',
-            duration: 2000
+        wx.navigateTo({
+            url: '/pages/tools/pdf-merge/index'
         });
     },
 
@@ -122,18 +120,14 @@ Page({
     },
 
     navigateToPdfSplit() {
-        wx.showToast({
-            title: '功能开发中，敬请期待',
-            icon: 'none',
-            duration: 2000
+        wx.navigateTo({
+            url: '/pages/tools/pdf-split/index'
         });
     },
 
     navigateToPdfWatermark() {
-        wx.showToast({
-            title: '功能开发中，敬请期待',
-            icon: 'none',
-            duration: 2000
+        wx.navigateTo({
+            url: '/pages/tools/pdf-watermark/index'
         });
     },
 
@@ -167,10 +161,8 @@ Page({
 
     // 多媒体处理功能
     navigateToImageFormat() {
-        wx.showToast({
-            title: '功能开发中，敬请期待',
-            icon: 'none',
-            duration: 2000
+        wx.navigateTo({
+            url: '/pages/tools/image-format/index'
         });
     },
 

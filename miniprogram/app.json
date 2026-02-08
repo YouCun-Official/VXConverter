@@ -6,6 +6,10 @@
     "pages/tools/qrcode/index",
     "pages/tools/signature/index",
     "pages/tools/image-compress/index",
+    "pages/tools/image-format/index",
+    "pages/tools/pdf-merge/index",
+    "pages/tools/pdf-watermark/index",
+    "pages/tools/pdf-split/index",
     "pages/index/index",
     "pages/example/index"
   ],

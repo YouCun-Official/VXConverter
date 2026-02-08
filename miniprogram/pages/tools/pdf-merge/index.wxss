@@ -1,0 +1,382 @@
+/* pages/tools/pdf-merge/index.wxss */
+
+.container {
+  min-height: 100vh;
+  background: #ffffff;
+  padding: 20rpx;
+  padding-bottom: 40rpx;
+}
+
+/* 文件选择区 */
+.upload-section {
+  margin-bottom: 30rpx;
+}
+
+.upload-box {
+  background: white;
+  border-radius: 20rpx;
+  padding: 60rpx 30rpx;
+  min-height: 260rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8rpx 30rpx rgba(0, 0, 0, 0.15);
+}
+
+.upload-icon {
+  font-size: 80rpx;
+  margin-bottom: 20rpx;
+}
+
+.upload-text {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 15rpx;
+}
+
+.upload-hint {
+  font-size: 24rpx;
+  color: #999;
+  text-align: center;
+  margin-bottom: 5rpx;
+}
+
+/* 文件列表区 */
+.files-section {
+  margin-bottom: 30rpx;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20rpx;
+  padding: 0 10rpx;
+}
+
+.section-title {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #333;
+}
+
+.clear-btn {
+  font-size: 28rpx;
+  color: #ef4444;
+  background: #fee;
+  padding: 10rpx 30rpx;
+  border-radius: 30rpx;
+}
+
+/* 提示框 */
+.tips-box {
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 15rpx;
+  padding: 20rpx 25rpx;
+  margin-bottom: 20rpx;
+  display: flex;
+  align-items: center;
+  box-shadow: 0 4rpx 15rpx rgba(0, 0, 0, 0.1);
+}
+
+.tips-icon {
+  font-size: 32rpx;
+  margin-right: 15rpx;
+}
+
+.tips-text {
+  font-size: 26rpx;
+  color: #666;
+  flex: 1;
+}
+
+/* PDF列表 */
+.pdf-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15rpx;
+}
+
+.pdf-card {
+  background: white;
+  border-radius: 20rpx;
+  padding: 25rpx;
+  display: flex;
+  align-items: center;
+  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.pdf-card.dragging {
+  opacity: 0.7;
+  transform: scale(1.05);
+  box-shadow: 0 8rpx 30rpx rgba(0, 0, 0, 0.25);
+  z-index: 999;
+}
+
+.pdf-index {
+  width: 60rpx;
+  height: 60rpx;
+  background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 28rpx;
+  font-weight: bold;
+  margin-right: 20rpx;
+  flex-shrink: 0;
+}
+
+.pdf-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.pdf-name {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8rpx;
+}
+
+.pdf-icon {
+  font-size: 32rpx;
+  margin-right: 10rpx;
+}
+
+.pdf-name-text {
+  font-size: 28rpx;
+  color: #333;
+  font-weight: 500;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  flex: 1;
+}
+
+.pdf-meta {
+  display: flex;
+  align-items: center;
+  gap: 15rpx;
+}
+
+.pdf-size {
+  font-size: 24rpx;
+  color: #999;
+}
+
+.pdf-pages {
+  font-size: 24rpx;
+  color: #999;
+}
+
+/* 操作按钮 */
+.pdf-actions {
+  display: flex;
+  gap: 10rpx;
+  margin-left: 15rpx;
+}
+
+.action-btn {
+  width: 50rpx;
+  height: 50rpx;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24rpx;
+  transition: all 0.3s;
+}
+
+.move-btn {
+  background: #3b82f6;
+  color: white;
+}
+
+.delete-btn {
+  background: #ef4444;
+  color: white;
+}
+
+.action-icon {
+  font-size: 28rpx;
+  font-weight: bold;
+}
+
+/* 合并区域 */
+.merge-section {
+  margin-top: 30rpx;
+}
+
+.merge-btn {
+  width: 100%;
+  background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
+  color: white;
+  font-size: 32rpx;
+  font-weight: bold;
+  border-radius: 20rpx;
+  padding: 30rpx;
+  border: none;
+  box-shadow: 0 8rpx 25rpx rgba(22, 163, 74, 0.4);
+}
+
+.merge-btn[disabled] {
+  opacity: 0.5;
+  box-shadow: none;
+}
+
+.merge-tips {
+  text-align: center;
+  margin-top: 20rpx;
+  padding: 15rpx;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 10rpx;
+  font-size: 26rpx;
+  color: #666;
+}
+
+/* 结果区域 */
+.result-section {
+  margin-top: 30rpx;
+}
+
+.result-card {
+  background: white;
+  border-radius: 20rpx;
+  padding: 30rpx;
+  box-shadow: 0 8rpx 30rpx rgba(0, 0, 0, 0.15);
+}
+
+.result-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20rpx;
+}
+
+.result-icon {
+  font-size: 48rpx;
+  margin-right: 15rpx;
+}
+
+.result-title {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #16a34a;
+}
+
+.result-info {
+  margin-bottom: 25rpx;
+}
+
+.result-text {
+  font-size: 28rpx;
+  color: #666;
+}
+
+.result-actions {
+  display: flex;
+  gap: 15rpx;
+}
+
+.result-btn {
+  flex: 1;
+  font-size: 28rpx;
+  font-weight: bold;
+  border-radius: 15rpx;
+  padding: 25rpx;
+  border: none;
+}
+
+.download-btn {
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  color: white;
+}
+
+.share-btn {
+  background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+  color: white;
+}
+
+/* 空状态 */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 80rpx 40rpx;
+  background: white;
+  border-radius: 20rpx;
+  margin-bottom: 30rpx;
+  box-shadow: 0 8rpx 30rpx rgba(0, 0, 0, 0.1);
+}
+
+.empty-icon {
+  font-size: 120rpx;
+  margin-bottom: 30rpx;
+  opacity: 0.6;
+}
+
+.empty-text {
+  font-size: 32rpx;
+  color: #666;
+  margin-bottom: 15rpx;
+  font-weight: bold;
+}
+
+.empty-hint {
+  font-size: 26rpx;
+  color: #999;
+  text-align: center;
+  margin-bottom: 8rpx;
+}
+
+/* 使用说明 */
+.guide-section {
+  background: white;
+  border-radius: 20rpx;
+  padding: 30rpx;
+  box-shadow: 0 8rpx 30rpx rgba(0, 0, 0, 0.1);
+}
+
+.guide-title {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 25rpx;
+}
+
+.guide-item {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 20rpx;
+}
+
+.guide-item:last-child {
+  margin-bottom: 0;
+}
+
+.guide-step {
+  width: 40rpx;
+  height: 40rpx;
+  background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 24rpx;
+  font-weight: bold;
+  margin-right: 15rpx;
+  flex-shrink: 0;
+}
+
+.guide-text {
+  flex: 1;
+  font-size: 28rpx;
+  color: #666;
+  line-height: 40rpx;
+}

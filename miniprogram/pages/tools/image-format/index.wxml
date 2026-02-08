@@ -1,0 +1,167 @@
+<!--pages/tools/image-format/index.wxml-->
+<wxs module="utils">
+  // 格式化百分比
+  var formatPercent = function(value) {
+    return value.toFixed(1);
+  };
+
+  // 计算节省百分比
+  var calcSavings = function(original, converted) {
+    if (original === 0) return 0;
+    return ((1 - converted / original) * 100).toFixed(1);
+  };
+
+  module.exports = {
+    formatPercent: formatPercent,
+    calcSavings: calcSavings
+  };
+</wxs>
+
+<view class="container">
+
+  <!-- 文件选择区 -->
+  <view class="upload-section">
+    <view class="upload-box" bindtap="chooseImages">
+      <text class="upload-icon">📁</text>
+      <text class="upload-text">选择图片</text>
+      <text class="upload-hint">支持JPG、PNG、WEBP格式</text>
+    </view>
+  </view>
+
+  <!-- 图片列表 -->
+  <view class="images-section" wx:if="{{images.length > 0}}">
+    <view class="section-header">
+      <text class="section-title">图片列表 ({{images.length}})</text>
+      <text class="clear-btn" bindtap="clearAll">清空</text>
+    </view>
+
+    <view class="image-list">
+      <view class="image-item" wx:for="{{images}}" wx:key="index">
+        <image class="image-preview" src="{{item.path}}" mode="aspectFill"></image>
+
+        <view class="image-info">
+          <view class="info-row">
+            <text class="info-label">原始:</text>
+            <text class="info-value">{{formatSize(item.originalSize)}} | {{item.width}}x{{item.height}}</text>
+          </view>
+
+          <view class="info-row" wx:if="{{item.convertedPath}}">
+            <text class="info-label success">转换后:</text>
+            <text class="info-value">{{formatSize(item.convertedSize)}} | {{item.format}}</text>
+          </view>
+
+          <view class="info-row" wx:if="{{item.convertedPath && item.originalSize > item.convertedSize}}">
+            <text class="savings">💾 节省 {{utils.calcSavings(item.originalSize, item.convertedSize)}}%</text>
+          </view>
+        </view>
+
+        <view class="image-actions">
+          <button class="action-btn save-btn" wx:if="{{item.convertedPath}}"
+                  bindtap="saveSingleImage" data-index="{{index}}">
+            保存
+          </button>
+          <button class="action-btn delete-btn" bindtap="deleteImage" data-index="{{index}}">
+            删除
+          </button>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 转换设置 -->
+  <view class="settings-section" wx:if="{{images.length > 0}}">
+    <view class="section-title">转换设置</view>
+
+    <!-- 目标格式 -->
+    <view class="setting-item">
+      <text class="setting-label">目标格式</text>
+      <picker class="setting-picker" mode="selector"
+              range="{{formatOptions}}" range-key="label"
+              bindchange="onFormatChange">
+        <view class="picker-display">
+          <text>{{formatOptions[0].label}}</text>
+          <text class="picker-arrow">▼</text>
+        </view>
+      </picker>
+    </view>
+
+    <!-- 质量预设 -->
+    <view class="setting-item">
+      <text class="setting-label">质量</text>
+      <view class="quality-presets">
+        <view class="preset-btn {{quality === item.value ? 'active' : ''}}"
+              wx:for="{{qualityPresets}}" wx:key="value"
+              bindtap="selectQualityPreset" data-quality="{{item.value}}">
+          {{item.label}}
+        </view>
+      </view>
+    </view>
+
+    <!-- 质量滑块 -->
+    <view class="setting-item">
+      <text class="setting-label">自定义质量: {{qualityPercent}}%</text>
+      <slider class="quality-slider"
+              min="10" max="100"
+              value="{{quality * 100}}"
+              bindchange="onQualityChange"
+              activeColor="#16a34a"
+              backgroundColor="#e5e7eb"
+              block-size="20"/>
+    </view>
+
+    <!-- 尺寸调整 -->
+    <view class="setting-item">
+      <text class="setting-label">尺寸</text>
+      <picker class="setting-picker" mode="selector"
+              range="{{resizeOptions}}" range-key="label"
+              value="{{resizeIndex}}"
+              bindchange="onResizeChange">
+        <view class="picker-display">
+          <text>{{resizeOptions[resizeIndex].label}}</text>
+          <text class="picker-arrow">▼</text>
+        </view>
+      </picker>
+    </view>
+  </view>
+
+  <!-- 转换按钮 -->
+  <view class="action-section" wx:if="{{images.length > 0}}">
+    <button class="convert-btn"
+            bindtap="startConvert"
+            disabled="{{isConverting}}"
+            loading="{{isConverting}}">
+      {{isConverting ? '转换中 ' + convertProgress + '%' : '开始转换'}}
+    </button>
+
+    <!-- 转换统计 -->
+    <view class="stats" wx:if="{{totalConvertedSize > 0}}">
+      <view class="stat-item">
+        <text class="stat-label">原始大小:</text>
+        <text class="stat-value">{{formatSize(totalOriginalSize)}}</text>
+      </view>
+      <view class="stat-item">
+        <text class="stat-label">转换后:</text>
+        <text class="stat-value">{{formatSize(totalConvertedSize)}}</text>
+      </view>
+      <view class="stat-item" wx:if="{{savingsPercent > 0}}">
+        <text class="stat-label">节省空间:</text>
+        <text class="stat-value success">{{savingsPercent}}%</text>
+      </view>
+    </view>
+
+    <!-- 保存全部按钮 -->
+    <button class="save-all-btn"
+            wx:if="{{totalConvertedSize > 0}}"
+            bindtap="saveAllToAlbum">
+      💾 保存全部到相册
+    </button>
+  </view>
+
+  <!-- 空状态 -->
+  <view class="empty-state" wx:if="{{images.length === 0}}">
+    <text class="empty-icon">🖼️</text>
+    <text class="empty-text">还没有图片</text>
+    <text class="empty-hint">点击上方按钮选择图片开始转换</text>
+  </view>
+
+</view>
