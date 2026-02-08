@@ -10,6 +10,7 @@
     "pages/tools/pdf-merge/index",
     "pages/tools/pdf-watermark/index",
     "pages/tools/pdf-split/index",
+    "pages/tools/pdf-to-image/index",
     "pages/index/index",
     "pages/example/index"
   ],
