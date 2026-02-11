@@ -80,34 +80,26 @@ Page({
     },
 
     navigateToPptToPdf() {
-        wx.showToast({
-            title: '功能开发中，敬请期待',
-            icon: 'none',
-            duration: 2000
+        wx.navigateTo({
+            url: '/pages/ppt-to-pdf/ppt-to-pdf'
         });
     },
 
     navigateToExcelToPdfNew() {
-        wx.showToast({
-            title: '功能开发中，敬请期待',
-            icon: 'none',
-            duration: 2000
+        wx.navigateTo({
+            url: '/pages/excel-to-pdf/excel-to-pdf'
         });
     },
 
     navigateToTxtToPdf() {
-        wx.showToast({
-            title: '功能开发中，敬请期待',
-            icon: 'none',
-            duration: 2000
+        wx.navigateTo({
+            url: '/pages/txt-to-pdf/txt-to-pdf'
         });
     },
 
     navigateToMarkdownToPdf() {
-        wx.showToast({
-            title: '功能开发中，敬请期待',
-            icon: 'none',
-            duration: 2000
+        wx.navigateTo({
+            url: '/pages/markdown-to-pdf/markdown-to-pdf'
         });
     },
 

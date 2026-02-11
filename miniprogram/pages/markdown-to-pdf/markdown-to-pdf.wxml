@@ -1,0 +1,62 @@
+<!--pages/markdown-to-pdf/markdown-to-pdf.wxml-->
+<view class="container">
+  <view class="header">
+    <text class="title">Markdown转PDF</text>
+    <text class="subtitle">支持.md和.markdown格式</text>
+  </view>
+
+  <!-- 文件选择区域 -->
+  <view class="file-section">
+    <view class="upload-area" wx:if="{{!selectedFile}}" bindtap="selectMarkdownFile">
+      <text class="upload-icon">📝</text>
+      <text class="upload-text">点击选择Markdown文档</text>
+      <text class="upload-hint">支持 .md, .markdown 格式</text>
+    </view>
+
+    <!-- 已选文件信息 -->
+    <view class="file-info" wx:if="{{selectedFile}}">
+      <view class="file-icon-large">📝</view>
+      <view class="file-details">
+        <text class="file-name">{{selectedFile.name}}</text>
+        <text class="file-size">{{selectedFile.size}}</text>
+      </view>
+      <view class="file-actions">
+        <view class="btn-remove" bindtap="removeFile">
+          <text>×</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 转换按钮 -->
+  <view class="actions">
+    <button
+      class="btn btn-primary"
+      bindtap="convertToPDF"
+      disabled="{{!selectedFile || isConverting}}"
+    >
+      <text class="btn-icon" wx:if="{{!isConverting}}">🔄</text>
+      <text wx:if="{{isConverting}}">转换中...</text>
+      <text wx:else>转换为PDF</text>
+    </button>
+  </view>
+
+  <!-- 进度提示 -->
+  <view class="progress-overlay" wx:if="{{isConverting}}">
+    <view class="progress-box">
+      <view class="spinner"></view>
+      <text class="progress-text">{{progressText}}</text>
+      <text class="progress-hint">请稍候，正在处理...</text>
+    </view>
+  </view>
+
+  <!-- 使用说明 -->
+  <view class="tips-section">
+    <view class="tips-title">💡 使用提示</view>
+    <view class="tip-item">• 支持.md和.markdown格式文件</view>
+    <view class="tip-item">• 文件大小建议不超过5MB</view>
+    <view class="tip-item">• 转换过程需要云服务支持</view>
+    <view class="tip-item">• 支持标题、列表、代码块等语法</view>
+    <view class="tip-item">• 转换后的PDF将保留格式样式</view>
+  </view>
+</view>

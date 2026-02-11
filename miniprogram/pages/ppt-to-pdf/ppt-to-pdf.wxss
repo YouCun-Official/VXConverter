@@ -1,0 +1,246 @@
+/* pages/ppt-to-pdf/ppt-to-pdf.wxss */
+.container {
+  min-height: 100vh;
+  background: #ffffff;
+  padding: 20rpx 30rpx;
+  display: flex;
+  flex-direction: column;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 30rpx;
+  padding: 20rpx 0;
+}
+
+.title {
+  display: block;
+  font-size: 38rpx;
+  font-weight: bold;
+  color: #333333;
+  margin-bottom: 10rpx;
+}
+
+.subtitle {
+  display: block;
+  font-size: 24rpx;
+  color: #666666;
+}
+
+/* 文件选择区域 */
+.file-section {
+  flex: 1;
+  margin-bottom: 30rpx;
+  padding: 0 40rpx;
+}
+
+.upload-area {
+  background: #f0fdf4;
+  border-radius: 16rpx;
+  padding: 100rpx 40rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border: 2rpx dashed #dcfce7;
+  transition: all 0.3s ease;
+}
+
+.upload-area:active {
+  background: #dcfce7;
+  transform: scale(0.98);
+}
+
+.upload-icon {
+  font-size: 120rpx;
+  margin-bottom: 20rpx;
+  opacity: 0.8;
+}
+
+.upload-text {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 10rpx;
+}
+
+.upload-hint {
+  font-size: 26rpx;
+  color: #666;
+}
+
+/* 文件信息 */
+.file-info {
+  background: #f0fdf4;
+  border: 1rpx solid #dcfce7;
+  border-radius: 16rpx;
+  padding: 30rpx 50rpx;
+  display: flex;
+  align-items: center;
+  gap: 30rpx;
+}
+
+.file-icon-large {
+  font-size: 80rpx;
+  flex-shrink: 0;
+}
+
+.file-details {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 10rpx;
+  overflow: hidden;
+}
+
+.file-name {
+  font-size: 30rpx;
+  font-weight: bold;
+  color: #333;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.file-size {
+  font-size: 24rpx;
+  color: #666;
+}
+
+.file-actions {
+  flex-shrink: 0;
+}
+
+.btn-remove {
+  width: 60rpx;
+  height: 60rpx;
+  background: rgba(255, 59, 48, 0.9);
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 40rpx;
+  border: none;
+  padding: 0;
+  line-height: 1;
+  box-sizing: border-box;
+  overflow: hidden;
+  position: relative;
+  flex-shrink: 0;
+}
+
+.btn-remove::after,
+.btn-remove::before {
+  display: none;
+}
+
+/* 操作按钮 */
+.actions {
+  margin-bottom: 30rpx;
+}
+
+.btn {
+  width: 100%;
+  height: 100rpx;
+  border-radius: 20rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10rpx;
+  font-size: 32rpx;
+  font-weight: bold;
+  border: none;
+  transition: all 0.3s ease;
+}
+
+.btn-icon {
+  font-size: 36rpx;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #4ade80 0%, #22c55e 100%);
+  color: white;
+}
+
+.btn-primary:active {
+  opacity: 0.9;
+}
+
+.btn-primary:disabled {
+  background: #e5e7eb;
+  color: #9ca3af;
+}
+
+/* 进度覆盖层 */
+.progress-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.progress-box {
+  background: white;
+  border-radius: 20rpx;
+  padding: 60rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 400rpx;
+}
+
+.spinner {
+  width: 80rpx;
+  height: 80rpx;
+  border: 6rpx solid #f3f3f3;
+  border-top: 6rpx solid #22c55e;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 30rpx;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.progress-text {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 10rpx;
+}
+
+.progress-hint {
+  font-size: 26rpx;
+  color: #666;
+}
+
+/* 使用提示 */
+.tips-section {
+  background: #f9fafb;
+  border: 1rpx solid #e5e7eb;
+  border-radius: 16rpx;
+  padding: 30rpx;
+}
+
+.tips-title {
+  font-size: 28rpx;
+  font-weight: bold;
+  color: #333333;
+  margin-bottom: 20rpx;
+}
+
+.tip-item {
+  font-size: 24rpx;
+  color: #666666;
+  line-height: 2;
+  padding-left: 10rpx;
+}

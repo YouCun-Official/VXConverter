@@ -1,0 +1,16 @@
+{
+    "name": "txt-to-pdf",
+    "version": "1.0.0",
+    "description": "TXT to PDF conversion cloud function with PDFKit",
+    "main": "index.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "author": "",
+    "license": "ISC",
+    "dependencies": {
+        "wx-server-sdk": "~2.6.3",
+        "pdfkit": "^0.13.0",
+        "iconv-lite": "^0.6.3"
+    }
+}
