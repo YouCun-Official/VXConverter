@@ -247,13 +247,6 @@
     </view>
 
     <view class="grid-container">
-      <!-- AI文档纠错 -->
-      <view class="grid-card" bindtap="navigateToAiCorrection">
-        <view class="grid-icon ai-correction-icon">
-          <text class="emoji-icon">🤖</text>
-        </view>
-        <text class="grid-label">AI文档纠错</text>
-      </view>
 
       <!-- 电子签名 -->
       <view class="grid-card" bindtap="navigateToESignature">
