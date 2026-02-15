@@ -1,0 +1,152 @@
+<!--pages/tools/audio-format/index.wxml-->
+<wxs module="utils">
+  var calcSavings = function(original, converted) {
+    if (original === 0) return 0;
+    return ((1 - converted / original) * 100).toFixed(1);
+  };
+
+  module.exports = {
+    calcSavings: calcSavings
+  };
+</wxs>
+
+<view class="container">
+
+  <!-- 文件选择区 -->
+  <view class="upload-section">
+    <view class="upload-box" bindtap="chooseAudios">
+      <text class="upload-icon">🎵</text>
+      <text class="upload-text">选择音频</text>
+      <text class="upload-hint">支持MP3、AAC、WAV格式，单个不超过50MB</text>
+    </view>
+  </view>
+
+  <!-- 音频列表 -->
+  <view class="audios-section" wx:if="{{audios.length > 0}}">
+    <view class="section-header">
+      <text class="section-title">音频列表 ({{audios.length}})</text>
+      <text class="clear-btn" bindtap="clearAll">清空</text>
+    </view>
+
+    <view class="audio-list">
+      <view class="audio-item" wx:for="{{audios}}" wx:key="index">
+        <view class="audio-preview">
+          <text class="audio-icon">🎧</text>
+          <text class="audio-badge">{{item.durationText}}</text>
+        </view>
+
+        <view class="audio-info">
+          <view class="info-row">
+            <text class="info-label">原始:</text>
+            <text class="info-value">{{formatSize(item.originalSize)}} | {{item.format}}</text>
+          </view>
+
+          <view class="info-row" wx:if="{{item.convertedFileID}}">
+            <text class="info-label success">转换后:</text>
+            <text class="info-value">{{formatSize(item.convertedSize)}} | {{item.targetFormat}}</text>
+          </view>
+
+          <view class="info-row" wx:if="{{item.convertedFileID && item.originalSize > item.convertedSize}}">
+            <text class="savings">💾 节省 {{utils.calcSavings(item.originalSize, item.convertedSize)}}%</text>
+          </view>
+        </view>
+
+        <view class="audio-actions">
+          <button class="action-btn save-btn" wx:if="{{item.convertedFileID}}"
+                  bindtap="saveSingleAudio" data-index="{{index}}">
+            保存
+          </button>
+          <button class="action-btn delete-btn" bindtap="deleteAudio" data-index="{{index}}">
+            删除
+          </button>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 转换设置 -->
+  <view class="settings-section" wx:if="{{audios.length > 0}}">
+    <view class="section-title">转换设置</view>
+
+    <!-- 目标格式 -->
+    <view class="setting-item">
+      <text class="setting-label">目标格式</text>
+      <picker class="setting-picker" mode="selector"
+              range="{{formatOptions}}" range-key="label"
+              value="{{targetFormatIndex}}"
+              bindchange="onFormatChange">
+        <view class="picker-display">
+          <text>{{formatOptions[targetFormatIndex].label}}</text>
+          <text class="picker-arrow">▼</text>
+        </view>
+      </picker>
+    </view>
+
+    <!-- 质量预设 -->
+    <view class="setting-item">
+      <text class="setting-label">音质</text>
+      <view class="quality-presets">
+        <view class="preset-btn {{qualityPreset === item.value ? 'active' : ''}}"
+              wx:for="{{qualityOptions}}" wx:key="value"
+              bindtap="selectQualityPreset" data-quality="{{item.value}}">
+          {{item.label}}
+        </view>
+      </view>
+    </view>
+
+    <!-- 比特率 -->
+    <view class="setting-item">
+      <text class="setting-label">比特率</text>
+      <picker class="setting-picker" mode="selector"
+              range="{{bitrateOptions}}" range-key="label"
+              value="{{bitrateIndex}}"
+              bindchange="onBitrateChange">
+        <view class="picker-display">
+          <text>{{bitrateOptions[bitrateIndex].label}}</text>
+          <text class="picker-arrow">▼</text>
+        </view>
+      </picker>
+    </view>
+  </view>
+
+  <!-- 转换按钮 -->
+  <view class="action-section" wx:if="{{audios.length > 0}}">
+    <button class="convert-btn"
+            bindtap="startConvert"
+            disabled="{{isConverting}}"
+            loading="{{isConverting}}">
+      {{isConverting ? '转换中 ' + convertProgress + '%' : '开始转换'}}
+    </button>
+
+    <!-- 转换统计 -->
+    <view class="stats" wx:if="{{totalConvertedSize > 0}}">
+      <view class="stat-item">
+        <text class="stat-label">原始大小:</text>
+        <text class="stat-value">{{formatSize(totalOriginalSize)}}</text>
+      </view>
+      <view class="stat-item">
+        <text class="stat-label">转换后:</text>
+        <text class="stat-value">{{formatSize(totalConvertedSize)}}</text>
+      </view>
+      <view class="stat-item" wx:if="{{savingsPercent > 0}}">
+        <text class="stat-label">节省空间:</text>
+        <text class="stat-value success">{{savingsPercent}}%</text>
+      </view>
+    </view>
+
+    <!-- 保存全部按钮 -->
+    <button class="save-all-btn"
+            wx:if="{{totalConvertedSize > 0}}"
+            bindtap="saveAllToLocal">
+      💾 保存全部到本地
+    </button>
+  </view>
+
+  <!-- 空状态 -->
+  <view class="empty-state" wx:if="{{audios.length === 0}}">
+    <text class="empty-icon">🎼</text>
+    <text class="empty-text">还没有音频</text>
+    <text class="empty-hint">点击上方按钮选择音频开始转换</text>
+  </view>
+
+</view>

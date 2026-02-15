@@ -157,18 +157,14 @@ Page({
     },
 
     navigateToVideoFormat() {
-        wx.showToast({
-            title: '功能开发中，敬请期待',
-            icon: 'none',
-            duration: 2000
+        wx.navigateTo({
+            url: '/pages/tools/video-format/index'
         });
     },
 
     navigateToAudioFormat() {
-        wx.showToast({
-            title: '功能开发中，敬请期待',
-            icon: 'none',
-            duration: 2000
+        wx.navigateTo({
+            url: '/pages/tools/audio-format/index'
         });
     },
 
@@ -181,10 +177,8 @@ Page({
     },
 
     navigateToVideoCompress() {
-        wx.showToast({
-            title: '功能开发中，敬请期待',
-            icon: 'none',
-            duration: 2000
+        wx.navigateTo({
+            url: '/pages/tools/video-compress/index'
         });
     },
 
@@ -203,10 +197,8 @@ Page({
     },
 
     navigateToAudioCompress() {
-        wx.showToast({
-            title: '功能开发中，敬请期待',
-            icon: 'none',
-            duration: 2000
+        wx.navigateTo({
+            url: '/pages/tools/audio-compress/index'
         });
     }
 });

@@ -1,0 +1,189 @@
+<!--pages/tools/video-compress/index.wxml-->
+<wxs module="utils">
+var formatPercent = function(value) {
+  return Math.round(value);
+};
+module.exports = {
+  formatPercent: formatPercent
+};
+</wxs>
+
+<view class="container">
+
+  <!-- 顶部操作区 -->
+  <view class="action-section">
+    <button class="choose-btn" bindtap="chooseVideos">
+      <text class="icon">🎬</text>
+      <text>选择视频</text>
+    </button>
+    <text class="video-count">已选择 {{videos.length}} 个</text>
+  </view>
+
+  <!-- 压缩设置 -->
+  <view class="settings-section">
+    <view class="section-title">🎚️ 压缩设置</view>
+
+    <!-- 质量预设按钮 -->
+    <view class="setting-item">
+      <view class="setting-label">
+        <text>压缩质量</text>
+      </view>
+
+      <!-- 质量预设按钮 -->
+      <view class="preset-buttons">
+        <block wx:for="{{qualityPresets}}" wx:key="value">
+          <button
+            size="mini"
+            class="preset-btn {{quality === item.value ? 'active' : ''}}"
+            data-quality="{{item.value}}"
+            bindtap="selectQualityPreset"
+          >
+            <text>{{item.icon}} {{item.label}}</text>
+          </button>
+        </block>
+      </view>
+    </view>
+
+    <!-- 分辨率选项 -->
+    <view class="setting-item">
+      <view class="setting-label">
+        <text>分辨率</text>
+      </view>
+      <picker
+        mode="selector"
+        range="{{resolutionOptions}}"
+        range-key="label"
+        value="{{resolutionIndex}}"
+        bindchange="onResolutionChange"
+      >
+        <view class="picker">
+          <text>{{resolutionOptions[resolutionIndex].label}}</text>
+          <text class="picker-arrow">▼</text>
+        </view>
+      </picker>
+    </view>
+
+    <!-- 码率选项 -->
+    <view class="setting-item">
+      <view class="setting-label">
+        <text>码率</text>
+      </view>
+      <picker
+        mode="selector"
+        range="{{bitrateOptions}}"
+        range-key="label"
+        value="{{bitrateIndex}}"
+        bindchange="onBitrateChange"
+      >
+        <view class="picker">
+          <text>{{bitrateOptions[bitrateIndex].icon}} {{bitrateOptions[bitrateIndex].label}}</text>
+          <text class="picker-arrow">▼</text>
+        </view>
+      </picker>
+    </view>
+
+    <!-- 统计信息 -->
+    <view class="stats" wx:if="{{totalCompressedSize > 0}}">
+      <view class="stat-item">
+        <text class="stat-label">总计压缩:</text>
+        <text class="stat-value">{{overallRatio}}%</text>
+      </view>
+      <view class="stat-item">
+        <text class="stat-label">原始大小:</text>
+        <text class="stat-value">{{formatSize(totalOriginalSize)}}</text>
+      </view>
+      <view class="stat-item">
+        <text class="stat-label">压缩后:</text>
+        <text class="stat-value">{{formatSize(totalCompressedSize)}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 视频列表 -->
+  <view class="videos-section" wx:if="{{videos.length > 0}}">
+    <view class="videos-header">
+      <text class="videos-title">视频列表</text>
+    </view>
+
+    <scroll-view scroll-y class="videos-scroll">
+      <block wx:for="{{videos}}" wx:key="index">
+        <view class="video-card">
+          <view class="preview-wrapper">
+            <image
+              class="preview"
+              src="{{item.thumbPath || '/images/video-placeholder.png'}}"
+              mode="aspectFill"
+            />
+            <text class="duration-badge">{{item.durationText}}</text>
+          </view>
+
+          <view class="video-info">
+            <view class="size-info">
+              <text class="original-size">{{formatSize(item.originalSize)}}</text>
+              <text class="arrow" wx:if="{{item.compressedSize}}">→</text>
+              <text class="compressed-size" wx:if="{{item.compressedSize}}">
+                {{formatSize(item.compressedSize)}}
+              </text>
+            </view>
+
+            <view class="dimension-info">
+              <text class="dimension">{{item.width}}×{{item.height}}</text>
+            </view>
+
+            <view class="ratio-badge" wx:if="{{item.ratio}}">
+              <text class="badge">-{{item.ratio}}%</text>
+            </view>
+          </view>
+
+          <view class="video-actions">
+            <button
+              wx:if="{{item.compressedFileID}}"
+              size="mini"
+              class="save-btn"
+              bindtap="saveSingleVideo"
+              data-index="{{index}}"
+            >
+              保存
+            </button>
+            <button
+              size="mini"
+              class="delete-btn"
+              bindtap="deleteVideo"
+              data-index="{{index}}"
+            >
+              删除
+            </button>
+          </view>
+        </view>
+      </block>
+    </scroll-view>
+  </view>
+
+  <!-- 空状态 -->
+  <view class="empty-state" wx:else>
+    <text class="empty-emoji">🎞️</text>
+    <text class="empty-tip">点击上方按钮选择视频</text>
+    <text class="empty-desc">支持一次选择最多3个视频，单个不超过100MB</text>
+  </view>
+
+  <!-- 底部操作按钮 -->
+  <view class="bottom-actions" wx:if="{{videos.length > 0}}">
+    <button
+      class="compress-btn"
+      bindtap="startCompress"
+      disabled="{{isCompressing}}"
+      loading="{{isCompressing}}"
+    >
+      {{isCompressing ? '压缩中 ' + compressProgress + '%' : '开始压缩'}}
+    </button>
+
+    <button
+      class="save-all-btn"
+      bindtap="saveAllToAlbum"
+      disabled="{{totalCompressedSize === 0}}"
+    >
+      保存全部
+    </button>
+  </view>
+
+</view>

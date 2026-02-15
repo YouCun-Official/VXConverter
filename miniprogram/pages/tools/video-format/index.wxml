@@ -1,0 +1,144 @@
+<!--pages/tools/video-format/index.wxml-->
+<wxs module="utils">
+  var calcSavings = function(original, converted) {
+    if (original === 0) return 0;
+    return ((1 - converted / original) * 100).toFixed(1);
+  };
+
+  module.exports = {
+    calcSavings: calcSavings
+  };
+</wxs>
+
+<view class="container">
+
+  <!-- 文件选择区 -->
+  <view class="upload-section">
+    <view class="upload-box" bindtap="chooseVideos">
+      <text class="upload-icon">🎬</text>
+      <text class="upload-text">选择视频</text>
+      <text class="upload-hint">支持MP4、MOV、AVI，单个不超过100MB</text>
+    </view>
+  </view>
+
+  <!-- 视频列表 -->
+  <view class="videos-section" wx:if="{{videos.length > 0}}">
+    <view class="section-header">
+      <text class="section-title">视频列表 ({{videos.length}})</text>
+      <text class="clear-btn" bindtap="clearAll">清空</text>
+    </view>
+
+    <view class="video-list">
+      <view class="video-item" wx:for="{{videos}}" wx:key="index">
+        <view class="video-preview">
+          <text class="video-icon">🎬</text>
+          <text class="video-badge">{{item.durationText}}</text>
+        </view>
+
+        <view class="video-info">
+          <view class="info-row">
+            <text class="info-label">原始:</text>
+            <text class="info-value">{{formatSize(item.originalSize)}} | {{item.format}}</text>
+          </view>
+
+          <view class="info-row" wx:if="{{item.convertedFileID}}">
+            <text class="info-label success">转换后:</text>
+            <text class="info-value">{{formatSize(item.convertedSize)}} | {{item.targetFormat}}</text>
+          </view>
+
+          <view class="info-row" wx:if="{{item.convertedFileID && item.originalSize > item.convertedSize}}">
+            <text class="savings">💾 节省 {{utils.calcSavings(item.originalSize, item.convertedSize)}}%</text>
+          </view>
+        </view>
+
+        <view class="video-actions">
+          <button class="action-btn save-btn" wx:if="{{item.convertedFileID}}"
+                  bindtap="saveSingleVideo" data-index="{{index}}">
+            保存
+          </button>
+          <button class="action-btn delete-btn" bindtap="deleteVideo" data-index="{{index}}">
+            删除
+          </button>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view class="settings-section" wx:if="{{videos.length > 0}}">
+    <view class="section-title">转换设置</view>
+
+    <view class="setting-item">
+      <text class="setting-label">目标格式</text>
+      <picker class="setting-picker" mode="selector"
+              range="{{formatOptions}}" range-key="label"
+              value="{{targetFormatIndex}}"
+              bindchange="onFormatChange">
+        <view class="picker-display">
+          <text>{{formatOptions[targetFormatIndex].label}}</text>
+          <text class="picker-arrow">▼</text>
+        </view>
+      </picker>
+    </view>
+
+    <view class="setting-item">
+      <text class="setting-label">清晰度预设</text>
+      <view class="quality-presets">
+        <view class="preset-btn {{qualityPreset === item.value ? 'active' : ''}}"
+              wx:for="{{qualityOptions}}" wx:key="value"
+              bindtap="selectQualityPreset" data-quality="{{item.value}}">
+          {{item.label}}
+        </view>
+      </view>
+    </view>
+
+    <view class="setting-item">
+      <text class="setting-label">分辨率</text>
+      <picker class="setting-picker" mode="selector"
+              range="{{resolutionOptions}}" range-key="label"
+              value="{{resolutionIndex}}"
+              bindchange="onResolutionChange">
+        <view class="picker-display">
+          <text>{{resolutionOptions[resolutionIndex].label}}</text>
+          <text class="picker-arrow">▼</text>
+        </view>
+      </picker>
+    </view>
+  </view>
+
+  <view class="action-section" wx:if="{{videos.length > 0}}">
+    <button class="convert-btn"
+            bindtap="startConvert"
+            disabled="{{isConverting}}"
+            loading="{{isConverting}}">
+      {{isConverting ? '转换中 ' + convertProgress + '%' : '开始转换'}}
+    </button>
+
+    <view class="stats" wx:if="{{totalConvertedSize > 0}}">
+      <view class="stat-item">
+        <text class="stat-label">原始大小:</text>
+        <text class="stat-value">{{formatSize(totalOriginalSize)}}</text>
+      </view>
+      <view class="stat-item">
+        <text class="stat-label">转换后:</text>
+        <text class="stat-value">{{formatSize(totalConvertedSize)}}</text>
+      </view>
+      <view class="stat-item" wx:if="{{savingsPercent > 0}}">
+        <text class="stat-label">节省空间:</text>
+        <text class="stat-value success">{{savingsPercent}}%</text>
+      </view>
+    </view>
+
+    <button class="save-all-btn"
+            wx:if="{{totalConvertedSize > 0}}"
+            bindtap="saveAllToAlbum">
+      💾 保存全部到相册
+    </button>
+  </view>
+
+  <view class="empty-state" wx:if="{{videos.length === 0}}">
+    <text class="empty-icon">🎞️</text>
+    <text class="empty-text">还没有视频</text>
+    <text class="empty-hint">点击上方按钮选择视频开始转换</text>
+  </view>
+
+</view>
