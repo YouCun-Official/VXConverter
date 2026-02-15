@@ -1,0 +1,57 @@
+<view class="container">
+  <view class="upload-section" wx:if="{{videos.length === 0}}">
+    <view class="upload-box" bindtap="chooseVideos">
+      <text class="upload-icon">🎵</text>
+      <text class="upload-text">选择视频</text>
+      <text class="upload-hint">支持MP4、MOV等格式，提取音频为MP3</text>
+    </view>
+  </view>
+
+  <view class="videos-section" wx:if="{{videos.length > 0}}">
+    <view class="section-header">
+       <text class="section-title">已选视频</text>
+       <text class="clear-btn" bindtap="deleteVideo" wx:if="{{!isConverting && !videos[0].convertedFileID}}">重选</text>
+    </view>
+    
+    <view class="video-list">
+      <view class="video-item" wx:for="{{videos}}" wx:key="index">
+         <view class="video-preview">
+            <text class="video-icon">🎬</text>
+            <text class="video-badge">{{item.durationText}}</text>
+         </view>
+         <view class="video-info">
+            <view class="info-row"><text class="info-label">大小:</text><text class="info-value">{{utils.formatSize(item.originalSize)}}</text></view>
+            <view class="info-row" wx:if="{{item.convertedFileID}}">
+                <text class="info-label success">成功:</text>
+                <text class="info-value">{{utils.formatSize(item.convertedSize)}} (MP3)</text>
+            </view>
+         </view>
+      </view>
+    </view>
+  </view>
+
+  <view class="action-section" wx:if="{{videos.length > 0}}">
+      <button class="convert-btn" bindtap="startConvert" loading="{{isConverting}}" disabled="{{isConverting}}" wx:if="{{!videos[0].convertedFileID}}">
+        {{isConverting ? '正在提取...' : '开始提取音频'}}
+      </button>
+      
+      <button class="save-all-btn" bindtap="saveSingleVideo" wx:if="{{videos[0].convertedFileID}}" style="background: #16a34a;">
+        保存音频
+      </button>
+
+      <button class="clear-btn" style="width:100%; margin-top:20rpx; background:#f3f4f6; color:#666;" bindtap="deleteVideo" wx:if="{{videos[0].convertedFileID}}">
+        转换下一个
+      </button>
+  </view>
+</view>
+
+<wxs module="utils">
+  var formatSize = function(size) {
+    if (size < 1024) return size + 'B';
+    if (size < 1024 * 1024) return (size / 1024).toFixed(2) + 'KB';
+    return (size / 1024 / 1024).toFixed(2) + 'MB';
+  };
+  module.exports = {
+    formatSize: formatSize
+  };
+</wxs>

@@ -20,7 +20,8 @@ const resolutionMap = {
   original: null,
   '1080p': '1920x1080',
   '720p': '1280x720',
-  '480p': '854x480'
+  '480p': '854x480',
+  '320p': '320x?'
 };
 
 exports.main = async (event) => {
@@ -29,7 +30,8 @@ exports.main = async (event) => {
     fileName = '',
     targetFormat = 'mp4',
     qualityPreset = 'standard',
-    resolution = 'original'
+    resolution = 'original',
+    fps = 10
   } = event;
 
   if (!fileID) {
@@ -40,7 +42,8 @@ exports.main = async (event) => {
   }
 
   const safeFormat = String(targetFormat).toLowerCase();
-  const ext = ['mp4', 'mov', 'avi'].includes(safeFormat) ? safeFormat : 'mp4';
+  const validFormats = ['mp4', 'mov', 'avi', 'mp3', 'gif'];
+  const ext = validFormats.includes(safeFormat) ? safeFormat : 'mp4';
   const inputName = fileName || `input_${Date.now()}.mp4`;
   const outputName = inputName.replace(/\.[a-zA-Z0-9]+$/, '') + `.${ext}`;
 
@@ -57,7 +60,8 @@ exports.main = async (event) => {
       outputPath: tempOutputPath,
       format: ext,
       qualityPreset,
-      resolution
+      resolution,
+      fps
     });
 
     const outputBuffer = fs.readFileSync(tempOutputPath);
@@ -87,22 +91,32 @@ exports.main = async (event) => {
   }
 };
 
-function transcodeVideo({ inputPath, outputPath, format, qualityPreset, resolution }) {
+function transcodeVideo({ inputPath, outputPath, format, qualityPreset, resolution, fps }) {
   return new Promise((resolve, reject) => {
-    const command = ffmpeg(inputPath)
-      .toFormat(format)
-      .videoBitrate(qualityBitrateMap[qualityPreset] || qualityBitrateMap.standard)
-      .audioBitrate('128k')
-      .outputOptions(['-movflags +faststart']);
+    let command = ffmpeg(inputPath).toFormat(format);
 
-    if (resolutionMap[resolution]) {
-      command.size(resolutionMap[resolution]);
-    }
-
-    if (format === 'avi') {
-      command.videoCodec('mpeg4').audioCodec('libmp3lame');
+    if (format === 'mp3') {
+      command.noVideo().audioCodec('libmp3lame').audioBitrate('128k');
+    } else if (format === 'gif') {
+      command.fps(Number(fps) || 10).outputOptions(['-loop 0']);
+      if (resolution !== 'original' && resolutionMap[resolution]) {
+        command.size(resolutionMap[resolution]);
+      }
     } else {
-      command.videoCodec('libx264').audioCodec('aac');
+      command
+        .videoBitrate(qualityBitrateMap[qualityPreset] || qualityBitrateMap.standard)
+        .audioBitrate('128k')
+        .outputOptions(['-movflags +faststart']);
+
+      if (resolutionMap[resolution]) {
+        command.size(resolutionMap[resolution]);
+      }
+
+      if (format === 'avi') {
+        command.videoCodec('mpeg4').audioCodec('libmp3lame');
+      } else {
+        command.videoCodec('libx264').audioCodec('aac');
+      }
     }
 
     command

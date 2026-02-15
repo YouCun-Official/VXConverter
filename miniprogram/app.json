@@ -14,6 +14,8 @@
     "pages/tools/audio-compress/index",
     "pages/tools/image-format/index",
     "pages/tools/video-format/index",
+    "pages/tools/video-to-audio/index",
+    "pages/tools/video-to-gif/index",
     "pages/tools/audio-format/index",
     "pages/tools/pdf-merge/index",
     "pages/tools/pdf-watermark/index",
