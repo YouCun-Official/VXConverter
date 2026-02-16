@@ -70,13 +70,7 @@
         <text class="grid-label">PDF转图片</text>
       </view>
 
-      <!-- PDF转Excel -->
-      <view class="grid-card" bindtap="navigateToPdfToExcel">
-        <view class="grid-icon pdf-to-excel-icon">
-          <text class="emoji-icon">📊</text>
-        </view>
-        <text class="grid-label">PDF转Excel</text>
-      </view>
+
     </view>
   </view>
 

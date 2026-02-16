@@ -1,0 +1,396 @@
+/* pages/pdf-to-ppt/index.wxss */
+
+.container {
+  min-height: 100vh;
+  background: #ffffff;
+  padding: 20rpx;
+  padding-bottom: 40rpx;
+}
+
+/* 文件选择区 */
+.upload-section {
+  margin-bottom: 30rpx;
+}
+
+.upload-box {
+  background: white;
+  border-radius: 20rpx;
+  padding: 60rpx 30rpx;
+  min-height: 260rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8rpx 30rpx rgba(0, 0, 0, 0.15);
+}
+
+.upload-icon {
+  font-size: 80rpx;
+  margin-bottom: 20rpx;
+}
+
+.upload-text {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 15rpx;
+}
+
+.upload-hint {
+  font-size: 24rpx;
+  color: #999;
+  text-align: center;
+  margin-bottom: 5rpx;
+}
+
+/* 文件信息 */
+.file-section {
+  margin-bottom: 30rpx;
+}
+
+.file-card {
+  background: white;
+  border-radius: 20rpx;
+  padding: 25rpx;
+  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.08);
+}
+
+.file-header {
+  display: flex;
+  align-items: center;
+}
+
+.file-icon {
+  font-size: 48rpx;
+  margin-right: 20rpx;
+}
+
+.file-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.file-name {
+  font-size: 28rpx;
+  color: #333;
+  font-weight: 500;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  margin-bottom: 8rpx;
+}
+
+.file-meta {
+  font-size: 24rpx;
+  color: #999;
+}
+
+.file-actions {
+  display: flex;
+  gap: 10rpx;
+}
+
+.action-btn {
+  padding: 12rpx 20rpx;
+  border-radius: 10rpx;
+  font-size: 24rpx;
+  font-weight: 500;
+}
+
+.change-btn {
+  background: #f0f9ff;
+  color: #0284c7;
+}
+
+.delete-btn {
+  background: #fef2f2;
+  color: #ef4444;
+}
+
+/* 转换设置 */
+.settings-section {
+  background: white;
+  border-radius: 20rpx;
+  padding: 30rpx;
+  margin-bottom: 30rpx;
+  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.08);
+}
+
+.section-title {
+  font-size: 30rpx;
+  font-weight: bold;
+  margin-bottom: 25rpx;
+  color: #333;
+}
+
+.setting-item {
+  margin-bottom: 30rpx;
+}
+
+.setting-item:last-child {
+  margin-bottom: 0;
+}
+
+.setting-label {
+  display: block;
+  font-size: 26rpx;
+  color: #666;
+  margin-bottom: 15rpx;
+}
+
+.setting-options {
+  display: flex;
+  gap: 20rpx;
+}
+
+.option-item {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  padding: 20rpx;
+  background: #f9fafb;
+  border: 2rpx solid #e5e7eb;
+  border-radius: 12rpx;
+  transition: all 0.2s;
+}
+
+.option-item.active {
+  background: #f0fdf4;
+  border-color: #16a34a;
+}
+
+.option-label {
+  font-size: 26rpx;
+  color: #333;
+  margin-left: 10rpx;
+}
+
+/* 自定义页码 */
+.custom-pages {
+  background: #f8fafc;
+  padding: 20rpx;
+  border-radius: 12rpx;
+  margin-bottom: 30rpx;
+  border: 1px solid #e2e8f0;
+}
+
+.input-box {
+  margin-bottom: 10rpx;
+}
+
+.input-label {
+  display: block;
+  font-size: 24rpx;
+  color: #64748b;
+  margin-bottom: 10rpx;
+}
+
+.page-input {
+  background: white;
+  border: 1px solid #cbd5e1;
+  border-radius: 8rpx;
+  padding: 10rpx 15rpx;
+  font-size: 26rpx;
+  color: #333;
+}
+
+.input-hint {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+}
+
+.hint-icon {
+  font-size: 24rpx;
+}
+
+.hint-text {
+  font-size: 22rpx;
+  color: #94a3b8;
+}
+
+/* 质量滑块 */
+.quality-slider {
+  margin-bottom: 10rpx;
+}
+
+.quality-labels {
+  display: flex;
+  justify-content: space-between;
+  padding: 0 10rpx;
+}
+
+.quality-label {
+  font-size: 24rpx;
+  color: #9ca3af;
+}
+
+.quality-label.active {
+  color: #16a34a;
+  font-weight: bold;
+}
+
+.quality-info {
+  text-align: right;
+}
+
+.info-text {
+  font-size: 24rpx;
+  color: #6b7280;
+}
+
+/* 转换按钮 */
+.action-section {
+  margin-bottom: 40rpx;
+}
+
+.convert-btn {
+  background: linear-gradient(135deg, #16a34a, #15803d);
+  color: white;
+  border-radius: 50rpx;
+  font-size: 32rpx;
+  font-weight: bold;
+  box-shadow: 0 10rpx 25rpx rgba(22, 163, 74, 0.4);
+  border: none;
+}
+
+.convert-btn[disabled] {
+  background: #d1d5db !important;
+  color: #9ca3af !important;
+  box-shadow: none;
+}
+
+/* 结果区域 */
+.result-section {
+  margin-bottom: 40rpx;
+}
+
+.result-card {
+  background: white;
+  border-radius: 20rpx;
+  padding: 30rpx;
+  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.08);
+}
+
+.result-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 30rpx;
+}
+
+.result-icon {
+  font-size: 60rpx;
+  margin-right: 20rpx;
+}
+
+.result-info {
+  flex: 1;
+}
+
+.result-title {
+  font-size: 30rpx;
+  font-weight: bold;
+  color: #333;
+  display: block;
+}
+
+.result-desc {
+  font-size: 24rpx;
+  color: #666;
+}
+
+.result-actions {
+  display: flex;
+  justify-content: center;
+}
+
+.download-btn {
+  background: #2563eb;
+  color: white;
+  font-size: 28rpx;
+  padding: 15rpx 40rpx;
+  border-radius: 50rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+/* 空状态 */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 60rpx 0;
+  margin-bottom: 30rpx;
+}
+
+.empty-icon {
+  font-size: 100rpx;
+  color: #d1d5db;
+  margin-bottom: 30rpx;
+}
+
+.empty-text {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 10rpx;
+}
+
+.empty-hint {
+  font-size: 26rpx;
+  color: #94a3b8;
+}
+
+/* 使用说明 */
+.guide-section {
+  background: white;
+  border-radius: 20rpx;
+  padding: 30rpx;
+  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.08);
+}
+
+.guide-title {
+  font-size: 30rpx;
+  font-weight: bold;
+  margin-bottom: 25rpx;
+  color: #333;
+}
+
+.guide-item {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 25rpx;
+}
+
+.guide-item:last-child {
+  margin-bottom: 0;
+}
+
+.guide-icon {
+  font-size: 32rpx;
+  margin-right: 20rpx;
+  margin-top: 2rpx;
+}
+
+.guide-content {
+  flex: 1;
+}
+
+.guide-label {
+  display: block;
+  font-size: 28rpx;
+  font-weight: 500;
+  color: #333;
+  margin-bottom: 5rpx;
+}
+
+.guide-desc {
+  display: block;
+  font-size: 24rpx;
+  color: #666;
+  line-height: 1.4;
+}

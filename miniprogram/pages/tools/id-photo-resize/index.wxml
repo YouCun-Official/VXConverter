@@ -1,0 +1,262 @@
+<!--pages/tools/id-photo-resize/index.wxml-->
+<wxs module="utils">
+var formatFileSize = function(bytes) {
+  if (!bytes) return '0 B';
+  if (bytes < 1024) {
+    return bytes + ' B';
+  } else if (bytes < 1024 * 1024) {
+    return (bytes / 1024).toFixed(2) + ' KB';
+  } else {
+    return (bytes / (1024 * 1024)).toFixed(2) + ' MB';
+  }
+};
+
+module.exports = {
+  formatFileSize: formatFileSize
+};
+</wxs>
+
+<view class="container">
+  <!-- 顶部操作区 -->
+  <view class="action-section">
+    <button class="choose-btn" bindtap="chooseImage">
+      <text class="icon">📷</text>
+      <text>选择照片</text>
+    </button>
+  </view>
+
+  <!-- 图片预览区 -->
+  <view class="preview-section" wx:if="{{hasImage}}">
+    <view class="preview-title">📸 图片预览</view>
+    
+    <view class="image-preview-container">
+      <!-- 原始图片 -->
+      <view class="preview-item">
+        <view class="preview-label">原始照片</view>
+        <image 
+          class="preview-image" 
+          src="{{originalImage}}" 
+          mode="aspectFit"
+          bindtap="previewImage"
+          data-src="{{originalImage}}"
+        />
+        <view class="preview-info">
+          <text>{{imageInfo.width}} × {{imageInfo.height}}</text>
+          <text>{{utils.formatFileSize(originalSize)}}</text>
+        </view>
+      </view>
+
+      <!-- 处理后图片 -->
+      <view class="preview-item" wx:if="{{processedImage}}">
+        <view class="preview-label">处理后</view>
+        <image 
+          class="preview-image processed" 
+          src="{{processedImage}}" 
+          mode="aspectFit"
+          bindtap="previewImage"
+          data-src="{{processedImage}}"
+        />
+        <view class="preview-info">
+          <text>{{currentSpecWidth}} × {{currentSpecHeight}}</text>
+          <text>{{utils.formatFileSize(processedSize)}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 设置区域 -->
+  <view class="settings-section">
+    <view class="section-title">⚙️ 证件照设置</view>
+
+    <!-- 照片规格选择 -->
+    <view class="setting-item">
+      <view class="setting-label">
+        <text class="label-icon">📏</text>
+        <text class="label-text">照片规格</text>
+      </view>
+      <picker 
+        mode="selector" 
+        range="{{photoSpecs}}" 
+        range-key="name"
+        value="{{selectedSpecIndex}}"
+        bindchange="onSpecChange"
+      >
+        <view class="picker">
+          <text class="picker-icon">{{photoSpecs[selectedSpecIndex].icon}}</text>
+          <text class="picker-text">{{photoSpecs[selectedSpecIndex].name}}</text>
+          <text class="picker-desc">{{photoSpecs[selectedSpecIndex].description}}</text>
+          <text class="picker-arrow">›</text>
+        </view>
+      </picker>
+    </view>
+
+    <!-- 自定义尺寸输入 -->
+    <view class="custom-size-section" wx:if="{{showCustomInput}}">
+      <view class="custom-input-row">
+        <view class="custom-input-item">
+          <text class="custom-label">宽度(mm)</text>
+          <input 
+            type="digit" 
+            class="custom-input" 
+            value="{{customWidth}}"
+            bindinput="onCustomWidthInput"
+            placeholder="35"
+          />
+        </view>
+        <text class="custom-separator">×</text>
+        <view class="custom-input-item">
+          <text class="custom-label">高度(mm)</text>
+          <input 
+            type="digit" 
+            class="custom-input" 
+            value="{{customHeight}}"
+            bindinput="onCustomHeightInput"
+            placeholder="45"
+          />
+        </view>
+      </view>
+      <button class="apply-btn" size="mini" bindtap="applyCustomSize">应用自定义尺寸</button>
+    </view>
+
+    <!-- 规格信息显示 -->
+    <view class="spec-info" wx:if="{{!showCustomInput}}">
+      <text class="spec-text">
+        尺寸: {{photoSpecs[selectedSpecIndex].widthMM}}mm × {{photoSpecs[selectedSpecIndex].heightMM}}mm
+      </text>
+      <text class="spec-text pixel-info">
+        像素: {{currentSpecWidth}} × {{currentSpecHeight}}
+      </text>
+    </view>
+
+    <!-- 背景颜色选择 -->
+    <view class="setting-item">
+      <view class="setting-label">
+        <text class="label-icon">🎨</text>
+        <text class="label-text">背景颜色</text>
+      </view>
+      <picker 
+        mode="selector" 
+        range="{{backgroundColors}}" 
+        range-key="name"
+        value="{{selectedBackgroundIndex}}"
+        bindchange="onBackgroundChange"
+      >
+        <view class="picker">
+          <text class="picker-icon">{{backgroundColors[selectedBackgroundIndex].icon}}</text>
+          <text class="picker-text">{{backgroundColors[selectedBackgroundIndex].name}}</text>
+          <view 
+            class="color-preview" 
+            wx:if="{{backgroundColors[selectedBackgroundIndex].color}}"
+            style="background-color: {{backgroundColors[selectedBackgroundIndex].color}}"
+          ></view>
+          <text class="picker-arrow">›</text>
+        </view>
+      </picker>
+    </view>
+
+    <!-- DPI选择 -->
+    <view class="setting-item">
+      <view class="setting-label">
+        <text class="label-icon">🔍</text>
+        <text class="label-text">分辨率</text>
+      </view>
+      <picker 
+        mode="selector" 
+        range="{{dpiOptions}}" 
+        range-key="name"
+        value="{{selectedDpiIndex}}"
+        bindchange="onDpiChange"
+      >
+        <view class="picker">
+          <text class="picker-text">{{dpiOptions[selectedDpiIndex].name}}</text>
+          <text class="picker-desc">{{dpiOptions[selectedDpiIndex].description}}</text>
+          <text class="picker-arrow">›</text>
+        </view>
+      </picker>
+    </view>
+
+    <!-- 图片质量选择 -->
+    <view class="setting-item">
+      <view class="setting-label">
+        <text class="label-icon">✨</text>
+        <text class="label-text">输出质量</text>
+      </view>
+      <picker 
+        mode="selector" 
+        range="{{qualityOptions}}" 
+        range-key="name"
+        value="{{selectedQualityIndex}}"
+        bindchange="onQualityChange"
+      >
+        <view class="picker">
+          <text class="picker-text">{{qualityOptions[selectedQualityIndex].name}}</text>
+          <text class="picker-arrow">›</text>
+        </view>
+      </picker>
+    </view>
+  </view>
+
+  <!-- 操作按钮 -->
+  <view class="button-section" wx:if="{{hasImage}}">
+    <button 
+      class="process-btn" 
+      bindtap="processImage"
+      disabled="{{isProcessing}}"
+      loading="{{isProcessing}}"
+    >
+      <text class="btn-icon">🔄</text>
+      <text>{{isProcessing ? '处理中...' : '重新处理'}}</text>
+    </button>
+
+    <button 
+      class="save-btn" 
+      bindtap="saveImage"
+      disabled="{{!processedImage || isProcessing}}"
+    >
+      <text class="btn-icon">💾</text>
+      <text>保存到相册</text>
+    </button>
+
+    <button 
+      class="reselect-btn" 
+      bindtap="reselect"
+      disabled="{{isProcessing}}"
+    >
+      <text class="btn-icon">🔄</text>
+      <text>重新选择</text>
+    </button>
+  </view>
+
+  <!-- 使用说明 -->
+  <view class="tips-section" wx:if="{{!hasImage}}">
+    <view class="tips-title">📖 使用说明</view>
+    <view class="tips-content">
+      <view class="tip-item">
+        <text class="tip-number">1</text>
+        <text class="tip-text">点击"选择照片"按钮，从相册选择或拍摄照片</text>
+      </view>
+      <view class="tip-item">
+        <text class="tip-number">2</text>
+        <text class="tip-text">选择需要的证件照规格（1寸、2寸、护照等）</text>
+      </view>
+      <view class="tip-item">
+        <text class="tip-number">3</text>
+        <text class="tip-text">选择背景颜色（可选），系统会自动调整</text>
+      </view>
+      <view class="tip-item">
+        <text class="tip-number">4</text>
+        <text class="tip-text">预览效果后，保存到相册即可使用</text>
+      </view>
+    </view>
+
+    <view class="tips-note">
+      <text class="note-icon">💡</text>
+      <text class="note-text">提示：建议使用正面照片，人像居中效果更好</text>
+    </view>
+  </view>
+
+  <!-- 底部说明 -->
+  <view class="footer">
+    <text class="footer-text">支持多种标准证件照规格</text>
+  </view>
+</view>

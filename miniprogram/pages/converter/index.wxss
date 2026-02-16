@@ -126,9 +126,7 @@
   background: linear-gradient(135deg, #f5576c 0%, #f093fb 100%);
 }
 
-.pdf-to-excel-icon {
-  background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
-}
+
 
 .ppt-to-pdf-icon {
   background: linear-gradient(135deg, #FF6B6B 0%, #FFD93D 100%);

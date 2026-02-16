@@ -1,0 +1,198 @@
+<!--pages/pdf-to-word/pdf-to-word.wxml-->
+<view class="container">
+
+  <!-- 页面标题区 -->
+  <view class="header-section">
+    <view class="title">📄 PDF转Word</view>
+    <view class="subtitle">快速将PDF文档转换为可编辑的Word文件</view>
+    <button class="info-btn" size="mini" bindtap="showConversionInfo">
+      <text>💡 转换说明</text>
+    </button>
+  </view>
+
+  <!-- 文件选择区 -->
+  <view class="file-section">
+    <view class="section-title">
+      <text class="section-icon">📁</text>
+      <text>选择PDF文件</text>
+    </view>
+
+    <view class="file-selector" wx:if="{{!selectedFile}}">
+      <button class="select-btn" bindtap="selectPDFFile">
+        <text class="btn-icon">📄</text>
+        <text class="btn-text">选择PDF文件</text>
+      </button>
+      <view class="file-tips">
+        <text>支持 .pdf 格式</text>
+        <text>建议大小 &lt; 20MB</text>
+      </view>
+    </view>
+
+    <view class="file-card" wx:if="{{selectedFile}}">
+      <view class="file-info-row">
+        <view class="file-icon">📄</view>
+        <view class="file-details">
+          <view class="file-name">{{selectedFile.name}}</view>
+          <view class="file-size">大小: {{selectedFile.size}}</view>
+        </view>
+        <button class="remove-btn" bindtap="removeFile">
+          <text>✕</text>
+        </button>
+      </view>
+    </view>
+  </view>
+
+  <!-- 转换选项区 -->
+  <view class="options-section" wx:if="{{selectedFile}}">
+    <view class="section-title">
+      <text class="section-icon">⚙️</text>
+      <text>转换选项</text>
+    </view>
+
+    <view class="option-item">
+      <view class="option-label">
+        <text class="option-icon">📐</text>
+        <view class="option-text">
+          <text class="option-name">保留格式</text>
+          <text class="option-desc">尝试保留原文档格式</text>
+        </view>
+      </view>
+      <switch 
+        checked="{{convertOptions.preserveFormatting}}" 
+        bindchange="toggleFormatting"
+        color="#16a34a"
+      />
+    </view>
+
+    <view class="option-item">
+      <view class="option-label">
+        <text class="option-icon">📃</text>
+        <view class="option-text">
+          <text class="option-name">保留分页符</text>
+          <text class="option-desc">在原分页位置插入分页符</text>
+        </view>
+      </view>
+      <switch 
+        checked="{{convertOptions.pageBreaks}}" 
+        bindchange="togglePageBreaks"
+        color="#16a34a"
+      />
+    </view>
+  </view>
+
+  <!-- 转换按钮 -->
+  <view class="action-section" wx:if="{{selectedFile}}">
+    <button 
+      class="convert-btn" 
+      bindtap="convertToWord"
+      disabled="{{isConverting}}"
+      loading="{{isConverting}}"
+    >
+      <text class="btn-icon">🔄</text>
+      <text class="btn-text">{{isConverting ? progressText : '开始转换为Word'}}</text>
+    </button>
+  </view>
+
+  <!-- 使用说明 -->
+  <view class="tips-section" wx:if="{{!selectedFile}}">
+    <view class="tips-title">📖 使用步骤</view>
+    <view class="tips-content">
+      <view class="tip-item">
+        <text class="tip-number">1</text>
+        <text class="tip-text">点击"选择PDF文件"按钮，选择要转换的PDF</text>
+      </view>
+      <view class="tip-item">
+        <text class="tip-number">2</text>
+        <text class="tip-text">根据需要调整转换选项</text>
+      </view>
+      <view class="tip-item">
+        <text class="tip-number">3</text>
+        <text class="tip-text">点击"开始转换"按钮进行转换</text>
+      </view>
+      <view class="tip-item">
+        <text class="tip-number">4</text>
+        <text class="tip-text">转换完成后可以打开、保存或分享Word文档</text>
+      </view>
+    </view>
+
+    <view class="tips-note">
+      <text class="note-icon">⚠️</text>
+      <text class="note-text">注意：PDF转Word是有损转换，主要提取文本内容，复杂的排版、图片、表格等可能无法完美还原</text>
+    </view>
+  </view>
+
+  <!-- 功能说明卡片 -->
+  <view class="features-section">
+    <view class="feature-card">
+      <text class="feature-icon">✅</text>
+      <view class="feature-text">
+        <text class="feature-title">文本提取</text>
+        <text class="feature-desc">准确提取PDF中的文字内容</text>
+      </view>
+    </view>
+
+    <view class="feature-card">
+      <text class="feature-icon">📋</text>
+      <view class="feature-text">
+        <text class="feature-title">格式保留</text>
+        <text class="feature-desc">尽可能保留段落和标题格式</text>
+      </view>
+    </view>
+
+    <view class="feature-card">
+      <text class="feature-icon">📄</text>
+      <view class="feature-text">
+        <text class="feature-title">分页保留</text>
+        <text class="feature-desc">可选择保留原PDF的分页结构</text>
+      </view>
+    </view>
+
+    <view class="feature-card">
+      <text class="feature-icon">🚀</text>
+      <view class="feature-text">
+        <text class="feature-title">快速转换</text>
+        <text class="feature-desc">云端处理，快速生成Word文档</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 支持的格式说明 -->
+  <view class="support-section">
+    <view class="support-title">✔️ 支持的PDF类型</view>
+    <view class="support-list">
+      <view class="support-item">
+        <text class="support-icon">✓</text>
+        <text>文本型PDF（可选择和复制的PDF）</text>
+      </view>
+      <view class="support-item">
+        <text class="support-icon">✓</text>
+        <text>标准排版的文档PDF</text>
+      </view>
+      <view class="support-item">
+        <text class="support-icon">✓</text>
+        <text>电子书、报告、论文等</text>
+      </view>
+    </view>
+
+    <view class="support-title not-support">✖️ 暂不支持</view>
+    <view class="support-list">
+      <view class="support-item disabled">
+        <text class="support-icon">✗</text>
+        <text>扫描版PDF（图片PDF）</text>
+      </view>
+      <view class="support-item disabled">
+        <text class="support-icon">✗</text>
+        <text>加密或受保护的PDF</text>
+      </view>
+      <view class="support-item disabled">
+        <text class="support-icon">✗</text>
+        <text>复杂表格和图形为主的PDF</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 底部提示 -->
+  <view class="footer">
+    <text class="footer-text">转换过程全程加密，保护您的文档安全</text>
+  </view>
+</view>

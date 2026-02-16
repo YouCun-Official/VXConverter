@@ -1,0 +1,183 @@
+<!--pages/pdf-to-ppt/index.wxml-->
+<wxs module="utils">
+  var formatSize = function(bytes) {
+    if (bytes === 0) return '0 B';
+    var k = 1024;
+    var sizes = ['B', 'KB', 'MB', 'GB'];
+    var i = Math.floor(Math.log(bytes) / Math.log(k));
+    return (bytes / Math.pow(k, i)).toFixed(2) + ' ' + sizes[i];
+  };
+
+  module.exports = {
+    formatSize: formatSize
+  };
+</wxs>
+
+<view class="container">
+
+  <!-- 选择文件区 -->
+  <view class="upload-section" wx:if="{{!pdfFile}}">
+    <view class="upload-box" bindtap="choosePDF">
+      <text class="upload-icon">📊</text>
+      <text class="upload-text">选择PDF文件</text>
+      <text class="upload-hint">点击选择要转换的PDF</text>
+      <text class="upload-hint">文件大小不超过50MB</text>
+    </view>
+  </view>
+
+  <!-- PDF文件信息 -->
+  <view class="file-section" wx:if="{{pdfFile}}">
+    <view class="file-card">
+      <view class="file-header">
+        <text class="file-icon">📄</text>
+        <view class="file-info">
+          <text class="file-name">{{pdfFile.name}}</text>
+          <text class="file-meta">{{utils.formatSize(pdfFile.size)}} | 共{{pageCount}}页</text>
+        </view>
+        <view class="file-actions">
+          <view class="action-btn change-btn" bindtap="choosePDF">
+            <text>更换</text>
+          </view>
+          <view class="action-btn delete-btn" bindtap="deletePDF">
+            <text>✕</text>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 转换设置 -->
+  <view class="settings-section" wx:if="{{pdfFile}}">
+    <view class="section-title">⚙️ 转换设置</view>
+
+    <!-- 页面选择 -->
+    <view class="setting-item">
+      <text class="setting-label">转换页面</text>
+      <radio-group class="setting-options" bindchange="onPageModeChange">
+        <label class="option-item {{pageMode === 'all' ? 'active' : ''}}">
+          <radio value="all" checked="{{pageMode === 'all'}}" color="#16a34a"/>
+          <text class="option-label">全部页面</text>
+        </label>
+        <label class="option-item {{pageMode === 'custom' ? 'active' : ''}}">
+          <radio value="custom" checked="{{pageMode === 'custom'}}" color="#16a34a"/>
+          <text class="option-label">自定义页面</text>
+        </label>
+      </radio-group>
+    </view>
+
+    <!-- 自定义页码输入 -->
+    <view class="custom-pages" wx:if="{{pageMode === 'custom'}}">
+      <view class="input-box">
+        <text class="input-label">页码范围（例如：1,3,5-8）</text>
+        <input class="page-input"
+               type="text"
+               value="{{customPages}}"
+               bindinput="onCustomPagesInput"
+               placeholder="输入页码，用逗号分隔"/>
+      </view>
+      <view class="input-hint">
+        <text class="hint-icon">💡</text>
+        <text class="hint-text">支持单页(1)、多页(1,3,5)、范围(1-5)</text>
+      </view>
+    </view>
+
+    <!-- 图片质量 (影响生成的PPT清晰度) -->
+    <view class="setting-item">
+      <text class="setting-label">PPT清晰度</text>
+      <view class="quality-slider">
+        <slider min="1" max="3"
+                value="{{quality}}"
+                step="1"
+                bindchange="onQualityChange"
+                activeColor="#16a34a"
+                backgroundColor="#e5e7eb"
+                block-size="20"
+                show-value="{{false}}"/>
+        <view class="quality-labels">
+          <text class="quality-label {{quality === 1 ? 'active' : ''}}">低</text>
+          <text class="quality-label {{quality === 2 ? 'active' : ''}}">中</text>
+          <text class="quality-label {{quality === 3 ? 'active' : ''}}">高</text>
+        </view>
+      </view>
+      <view class="quality-info">
+        <text class="info-text">当前质量：{{qualityText}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 转换按钮 -->
+  <view class="action-section" wx:if="{{pdfFile}}">
+    <button class="convert-btn"
+            bindtap="startConvert"
+            disabled="{{isConverting}}"
+            loading="{{isConverting}}">
+      {{isConverting ? '转换中 ' + convertProgress + '%' : '开始转换'}}
+    </button>
+  </view>
+
+  <!-- 结果区域 -->
+  <view class="result-section" wx:if="{{convertedFile}}">
+    <view class="section-title">✅ 转换完成</view>
+
+    <view class="result-card">
+      <view class="result-header">
+        <text class="result-icon">📊</text>
+        <view class="result-info">
+          <text class="result-title">PPT转换成功</text>
+          <text class="result-desc">点击下方按钮保存文件</text>
+        </view>
+      </view>
+
+      <div class="result-actions">
+           <button class="action-btn download-btn" bindtap="downloadPpt">
+             📥 下载/预览PPT
+           </button>
+      </div>
+    </view>
+  </view>
+
+  <!-- 空状态 -->
+  <view class="empty-state" wx:if="{{!pdfFile}}">
+    <text class="empty-icon">📊</text>
+    <text class="empty-text">还没有选择文件</text>
+    <text class="empty-hint">点击上方按钮选择PDF文件</text>
+  </view>
+
+  <!-- 使用说明 -->
+  <view class="guide-section" wx:if="{{!pdfFile}}">
+    <view class="guide-title">📖 使用说明</view>
+
+    <view class="guide-item">
+      <text class="guide-icon">1️⃣</text>
+      <view class="guide-content">
+        <text class="guide-label">选择PDF文件</text>
+        <text class="guide-desc">点击上方按钮选择要转换的PDF</text>
+      </view>
+    </view>
+
+    <view class="guide-item">
+      <text class="guide-icon">2️⃣</text>
+      <view class="guide-content">
+        <text class="guide-label">设置转换选项</text>
+        <text class="guide-desc">选择页面范围和清晰度</text>
+      </view>
+    </view>
+
+    <view class="guide-item">
+      <text class="guide-icon">3️⃣</text>
+      <view class="guide-content">
+        <text class="guide-label">开始转换</text>
+        <text class="guide-desc">点击转换按钮，等待处理完成</text>
+      </view>
+    </view>
+
+    <view class="guide-item">
+      <text class="guide-icon">4️⃣</text>
+      <view class="guide-content">
+        <text class="guide-label">保存文件</text>
+        <text class="guide-desc">转换完成后可下载PPT文件</text>
+      </view>
+    </view>
+  </view>
+
+</view>

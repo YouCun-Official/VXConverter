@@ -36,10 +36,8 @@ Page({
      * 导航到PDF转Word页面
      */
     navigateToPdfToWord() {
-        wx.showToast({
-            title: '功能开发中，敬请期待',
-            icon: 'none',
-            duration: 2000
+        wx.navigateTo({
+            url: '/pages/pdf-to-word/pdf-to-word'
         });
     },
 
@@ -71,13 +69,7 @@ Page({
         });
     },
 
-    navigateToPdfToExcel() {
-        wx.showToast({
-            title: '功能开发中，敬请期待',
-            icon: 'none',
-            duration: 2000
-        });
-    },
+
 
     navigateToPptToPdf() {
         wx.navigateTo({
@@ -109,6 +101,12 @@ Page({
         });
     },
 
+    navigateToPdfToPpt() {
+        wx.navigateTo({
+            url: '/pages/pdf-to-ppt/index'
+        });
+    },
+
     navigateToPdfSplit() {
         wx.navigateTo({
             url: '/pages/tools/pdf-split/index'
@@ -135,10 +133,8 @@ Page({
     },
 
     navigateToIDPhotoResize() {
-        wx.showToast({
-            title: '功能开发中，敬请期待',
-            icon: 'none',
-            duration: 2000
+        wx.navigateTo({
+            url: '/pages/tools/id-photo-resize/index'
         });
     },
 
