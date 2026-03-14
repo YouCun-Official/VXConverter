@@ -1,7 +1,7 @@
 {
     "name": "excel-to-pdf",
-    "version": "1.0.0",
-    "description": "Excel to PDF conversion cloud function with LibreOffice",
+    "version": "2.0.0",
+    "description": "Excel to PDF conversion with pure JavaScript (ExcelJS + PDFKit)",
     "main": "index.js",
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1"
@@ -9,6 +9,8 @@
     "author": "",
     "license": "ISC",
     "dependencies": {
-        "wx-server-sdk": "~2.6.3"
+        "wx-server-sdk": "~2.6.3",
+        "exceljs": "^4.3.0",
+        "pdfkit": "^0.13.0"
     }
 }

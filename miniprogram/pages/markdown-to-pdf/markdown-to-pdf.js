@@ -36,12 +36,12 @@ Page({
             success(res) {
                 const file = res.tempFiles[0];
 
-                // 检查文件大小（限制5MB）
-                if (file.size > 5 * 1024 * 1024) {
-                    wx.showToast({
-                        title: '文件过大，请选择小于5MB的文件',
-                        icon: 'none',
-                        duration: 2000
+                // 检查文件大小（限制3MB，避免云函数超时）
+                if (file.size > 3 * 1024 * 1024) {
+                    wx.showModal({
+                        title: '文件过大',
+                        content: '为避免转换超时，建议选择小于3MB的Markdown文件。\n\n如果文件包含大量图片，建议使用外链图片而非内嵌图片。',
+                        showCancel: false
                     });
                     return;
                 }
@@ -158,9 +158,21 @@ Page({
                 isConverting: false
             });
 
+            // 提供更友好的错误提示
+            let errorMsg = error.message || '转换过程中出现错误';
+            let errorDetail = '';
+
+            if (errorMsg.includes('timeout') || errorMsg.includes('超时')) {
+                errorDetail = '转换超时，可能原因：\n1. 文件过大\n2. 包含大量图片\n\n建议：减少文件大小或图片数量';
+            } else if (errorMsg.includes('memory') || errorMsg.includes('内存')) {
+                errorDetail = '内存不足，请尝试：\n1. 减少文件大小\n2. 删除部分图片\n3. 分批转换';
+            } else if (errorMsg.includes('图片')) {
+                errorDetail = '图片处理失败，请检查：\n1. 图片链接是否有效\n2. 图片大小是否过大';
+            }
+
             wx.showModal({
                 title: '转换失败',
-                content: error.message || '转换过程中出现错误，请重试',
+                content: errorDetail || errorMsg,
                 showCancel: false
             });
         }

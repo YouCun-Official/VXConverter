@@ -110,10 +110,14 @@ module.exports = {
         <view class="video-card">
           <view class="preview-wrapper">
             <image
+              wx:if="{{item.thumbPath}}"
               class="preview"
-              src="{{item.thumbPath || '/images/video-placeholder.png'}}"
+              src="{{item.thumbPath}}"
               mode="aspectFill"
             />
+            <view wx:else class="preview preview-placeholder">
+              <text class="placeholder-icon">🎬</text>
+            </view>
             <text class="duration-badge">{{item.durationText}}</text>
           </view>
 
@@ -127,7 +131,7 @@ module.exports = {
             </view>
 
             <view class="dimension-info">
-              <text class="dimension">{{item.width}}×{{item.height}}</text>
+              <text class="dimension">{{item.width && item.height ? item.width + '×' + item.height : '尺寸未知'}}</text>
             </view>
 
             <view class="ratio-badge" wx:if="{{item.ratio}}">

@@ -1,9 +1,9 @@
-// cloudfunctions/markdownToPdf/index.js - v1.1 增强版
+//路径：cloudfunctions/markdownToPdf
 const cloud = require('wx-server-sdk');
 const PDFDocument = require('pdfkit');
 const { marked } = require('marked');
 const axios = require('axios');
-const sharp = require('sharp');
+const probe = require('probe-image-size');
 const fs = require('fs');
 const path = require('path');
 
@@ -11,27 +11,17 @@ cloud.init({
     env: cloud.DYNAMIC_CURRENT_ENV
 });
 
-/**
- * Markdown转PDF云函数 - v1.1增强版
- *
- * 新增功能：
- * - ✅ 表格支持
- * - ✅ 图片支持（网络图片和Base64）
- *
- * 原有功能：
- * - 标题 (H1-H6)
- * - 段落
- * - 列表（有序/无序）
- * - 代码块
- * - 引用块
- * - 水平线
- */
+
 exports.main = async (event, context) => {
     const { fileID, fileName } = event;
     const tmpDir = '/tmp';
 
+    // 记录初始内存
+    const memStart = process.memoryUsage();
+    console.log('开始转换 - 初始内存:', formatMemory(memStart));
+
     try {
-        console.log('开始处理Markdown文件 (v1.1):', fileName);
+        console.log('开始处理Markdown文件 (v1.2优化版):', fileName);
 
         // 1. 下载Markdown文件
         console.log('下载Markdown文件...');
@@ -55,6 +45,14 @@ exports.main = async (event, context) => {
         }
 
         console.log('Markdown内容长度:', markdownContent.length, '字符');
+
+        // 检查内容大小限制（防止超大文件）
+        if (markdownContent.length > 500000) {
+            return {
+                success: false,
+                error: '文件内容过大，最多支持50万字符'
+            };
+        }
 
         // 3. 创建PDF文档
         console.log('开始生成PDF...');
@@ -90,7 +88,10 @@ exports.main = async (event, context) => {
 
         // 5. 读取生成的PDF
         const pdfBuffer = fs.readFileSync(pdfPath);
-        console.log('PDF大小:', pdfBuffer.length, 'bytes');
+        console.log('PDF大小:', formatBytes(pdfBuffer.length));
+
+        const memAfterPdf = process.memoryUsage();
+        console.log('PDF生成后内存:', formatMemory(memAfterPdf));
 
         // 6. 上传PDF到云存储
         const outputFileName = fileName.replace(/\.(md|markdown)$/i, '.pdf');
@@ -120,19 +121,27 @@ exports.main = async (event, context) => {
             console.log('清理临时文件时出错:', cleanupError.message);
         }
 
+        const memEnd = process.memoryUsage();
+        console.log('转换完成 - 最终内存:', formatMemory(memEnd));
+        console.log('内存增长:', formatBytes(memEnd.heapUsed - memStart.heapUsed));
+
         // 8. 返回结果
         return {
             success: true,
             pdfFileID: uploadResult.fileID,
             fileName: outputFileName,
             fileSize: pdfBuffer.length,
-            version: 'v1.1',
-            features: ['tables', 'images'],
-            message: 'Markdown已成功转换为PDF (v1.1增强版)'
+            version: 'v1.2',
+            features: ['tables', 'images-optimized'],
+            message: 'Markdown已成功转换为PDF (v1.2优化版)'
         };
 
     } catch (error) {
         console.error('转换失败:', error);
+        console.error('错误堆栈:', error.stack);
+
+        const memError = process.memoryUsage();
+        console.log('失败时内存:', formatMemory(memError));
 
         // 清理可能残留的临时文件
         try {
@@ -292,7 +301,7 @@ async function renderParagraph(doc, token) {
 }
 
 /**
- * 渲染图片（新增）
+ * 渲染图片（优化版：移除sharp依赖）
  */
 async function renderImage(doc, token) {
     try {
@@ -316,64 +325,93 @@ async function renderImage(doc, token) {
             return;
         }
 
-        // 获取图片元数据
-        const metadata = await sharp(imageBuffer).metadata();
-        let { width, height } = metadata;
+        console.log('图片大小:', formatBytes(imageBuffer.length));
 
-        // 计算图片尺寸
+        // 检查图片大小限制（5MB）
+        const MAX_IMAGE_SIZE = 5 * 1024 * 1024;
+        if (imageBuffer.length > MAX_IMAGE_SIZE) {
+            console.log('图片过大，跳过');
+            doc.fontSize(10)
+               .fillColor('#ff9800')
+               .text(`[图片过大(${formatBytes(imageBuffer.length)})，已跳过: ${imageAlt}]`, {
+                   align: 'left'
+               })
+               .fillColor('#000000');
+            doc.moveDown(0.5);
+            return;
+        }
+
+        // 使用 probe-image-size 获取图片尺寸（不加载整个图片）
+        let width, height;
+        try {
+            const dimensions = await probe.sync(imageBuffer);
+            width = dimensions.width;
+            height = dimensions.height;
+            console.log('图片尺寸:', width, 'x', height);
+        } catch (err) {
+            console.log('无法获取图片尺寸，使用默认值');
+            width = 400;
+            height = 300;
+        }
+
+        // 计算缩放后的尺寸
         const maxWidth = doc.page.width - 100; // 减去边距
         const maxHeight = 400;
 
         // 按比例缩放
-        if (width > maxWidth) {
-            height = (height * maxWidth) / width;
-            width = maxWidth;
+        let scaledWidth = width;
+        let scaledHeight = height;
+
+        if (scaledWidth > maxWidth) {
+            scaledHeight = (scaledHeight * maxWidth) / scaledWidth;
+            scaledWidth = maxWidth;
         }
-        if (height > maxHeight) {
-            width = (width * maxHeight) / height;
-            height = maxHeight;
+        if (scaledHeight > maxHeight) {
+            scaledWidth = (scaledWidth * maxHeight) / scaledHeight;
+            scaledHeight = maxHeight;
         }
 
         // 检查是否需要分页
-        if (doc.y + height > 700) {
+        if (doc.y + scaledHeight > 700) {
             doc.addPage();
         }
 
-        // 保存处理后的图片到临时文件
-        const tempImagePath = path.join('/tmp', `image_${Date.now()}.jpg`);
-        await sharp(imageBuffer)
-            .resize(Math.floor(width), Math.floor(height))
-            .jpeg({ quality: 85 })
-            .toFile(tempImagePath);
+        // 直接插入图片（PDFKit 会自动处理）
+        const centerX = (doc.page.width - scaledWidth) / 2;
 
-        // 插入图片（居中）
-        const centerX = (doc.page.width - width) / 2;
-        doc.image(tempImagePath, centerX, doc.y, {
-            width: width,
-            height: height
-        });
+        try {
+            doc.image(imageBuffer, centerX, doc.y, {
+                width: scaledWidth,
+                height: scaledHeight,
+                align: 'center'
+            });
 
-        // 更新Y坐标
-        doc.y += height;
+            // 更新Y坐标
+            doc.y += scaledHeight;
 
-        // 显示图片描述（如果有）
-        if (imageAlt && imageAlt !== '图片') {
-            doc.moveDown(0.2);
+            // 显示图片描述（如果有）
+            if (imageAlt && imageAlt !== '图片') {
+                doc.moveDown(0.2);
+                doc.fontSize(10)
+                   .fillColor('#666666')
+                   .text(imageAlt, {
+                       align: 'center'
+                   })
+                   .fillColor('#000000');
+            }
+
+            doc.moveDown(1);
+
+        } catch (pdfError) {
+            console.error('PDFKit 插入图片失败:', pdfError);
+            // 显示错误占位
             doc.fontSize(10)
-               .fillColor('#666666')
-               .text(imageAlt, {
-                   align: 'center'
+               .fillColor('#ff0000')
+               .text(`[图片格式不支持: ${imageAlt}]`, {
+                   align: 'left'
                })
                .fillColor('#000000');
-        }
-
-        doc.moveDown(1);
-
-        // 清理临时文件
-        try {
-            fs.unlinkSync(tempImagePath);
-        } catch (err) {
-            console.log('清理临时图片失败:', err);
+            doc.moveDown(0.5);
         }
 
     } catch (error) {
@@ -391,7 +429,7 @@ async function renderImage(doc, token) {
 }
 
 /**
- * 获取图片Buffer
+ * 获取图片Buffer（优化版）
  */
 async function getImageBuffer(imageUrl) {
     try {
@@ -400,17 +438,29 @@ async function getImageBuffer(imageUrl) {
             console.log('下载网络图片:', imageUrl);
             const response = await axios.get(imageUrl, {
                 responseType: 'arraybuffer',
-                timeout: 10000, // 10秒超时
+                timeout: 8000, // 8秒超时（降低以避免云函数超时）
+                maxContentLength: 5 * 1024 * 1024, // 最大5MB
                 headers: {
                     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
-                }
+                },
+                validateStatus: (status) => status === 200 // 只接受200状态码
             });
             return Buffer.from(response.data);
         } else if (imageUrl.startsWith('data:image/')) {
             // Base64图片
             console.log('处理Base64图片');
             const base64Data = imageUrl.split(',')[1];
-            return Buffer.from(base64Data, 'base64');
+            if (!base64Data) {
+                console.log('Base64数据格式错误');
+                return null;
+            }
+            const buffer = Buffer.from(base64Data, 'base64');
+            // 检查大小
+            if (buffer.length > 5 * 1024 * 1024) {
+                console.log('Base64图片过大');
+                return null;
+            }
+            return buffer;
         } else {
             // 本地图片（云函数环境中不支持）
             console.log('本地图片路径不支持:', imageUrl);
@@ -418,6 +468,11 @@ async function getImageBuffer(imageUrl) {
         }
     } catch (error) {
         console.error('获取图片失败:', error.message);
+        if (error.code === 'ECONNABORTED') {
+            console.log('图片下载超时');
+        } else if (error.response) {
+            console.log('HTTP错误:', error.response.status);
+        }
         return null;
     }
 }
@@ -630,4 +685,17 @@ function checkAndAddPage(doc) {
     if (doc.y > 700) {
         doc.addPage();
     }
+}
+
+/**
+ * 内存格式化工具函数
+ */
+function formatMemory(mem) {
+    return `堆: ${formatBytes(mem.heapUsed)}/${formatBytes(mem.heapTotal)}, RSS: ${formatBytes(mem.rss)}`;
+}
+
+function formatBytes(bytes) {
+    if (bytes < 1024) return bytes + 'B';
+    if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(2) + 'KB';
+    return (bytes / 1024 / 1024).toFixed(2) + 'MB';
 }

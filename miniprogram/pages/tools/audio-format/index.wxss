@@ -124,6 +124,18 @@
   font-size: 24rpx;
 }
 
+.file-name {
+  color: #333;
+  font-size: 26rpx;
+  font-weight: 500;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 100%;
+  display: block;
+  margin-bottom: 5rpx;
+}
+
 .info-label {
   color: #666;
   margin-right: 10rpx;

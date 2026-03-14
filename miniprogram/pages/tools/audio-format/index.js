@@ -267,15 +267,23 @@ Page({
           filePath: audio.path
         });
 
-        // 调用云函数进行转换
+        // 将质量预设转换为数值（audioCompress期望quality参数）
+        const qualityMap = {
+          'high': 0.9,
+          'standard': 0.8,
+          'compress': 0.6
+        };
+        const qualityValue = qualityMap[this.data.qualityPreset] || 0.8;
+
+        // 调用云函数进行转换（使用audioCompress）
         const callRes = await wx.cloud.callFunction({
-          name: 'audioFormatConvert',
+          name: 'audioCompress',
           data: {
             fileID: uploadRes.fileID,
             fileName,
-            targetFormat: this.data.targetFormat,
-            qualityPreset: this.data.qualityPreset,
-            bitrate
+            quality: qualityValue,
+            bitrate: bitrate === 'original' ? '' : bitrate,
+            format: this.data.targetFormat
           }
         });
 

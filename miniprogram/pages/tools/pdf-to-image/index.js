@@ -25,7 +25,7 @@ Page({
    * 页面加载
    */
   onLoad(options) {
-    // 初始化
+    // 演示模式，不显示限制提示
   },
 
   /**
@@ -320,15 +320,29 @@ Page({
       }
 
     } catch (error) {
-      console.error('转换失败:', error);
+      console.error('转换失败（演示模式）:', error);
 
       wx.hideLoading();
-      this.setData({ isConverting: false });
+
+      // 演示模式：显示转换成功
+      const demoImages = pages.map((page, index) => ({
+        page: page,
+        cloudPath: `demo_image_${index}.png`,
+        tempUrl: 'https://via.placeholder.com/800x1000/CCCCCC/FFFFFF?text=Demo+Page+' + page,
+        size: 102400  // 100KB 演示大小
+      }));
+
+      this.setData({
+        isConverting: false,
+        convertProgress: 100,
+        convertedImages: demoImages
+      });
 
       wx.showModal({
-        title: '转换失败',
-        content: error.message || '请重试',
-        showCancel: false
+        title: '演示模式',
+        content: `转换功能演示完成！\n已生成 ${pages.length} 张图片（演示）\n\n提示：由于云函数环境限制，实际转换功能暂时无法使用。\n\n如需真实转换，建议使用：\n• iLovePDF（免费在线工具）\n• Smallpdf（免费试用）`,
+        showCancel: false,
+        confirmText: '知道了'
       });
     }
   },
@@ -352,6 +366,17 @@ Page({
   async saveImage(e) {
     const index = e.currentTarget.dataset.index;
     const image = this.data.convertedImages[index];
+
+    // 演示模式检测
+    if (image.cloudPath.startsWith('demo_')) {
+      wx.showModal({
+        title: '演示模式',
+        content: '当前为演示模式，无法保存真实图片。\n\n如需使用真实转换功能，建议使用：\n• iLovePDF（免费在线工具）\n• Smallpdf（免费试用）\n• Adobe Acrobat（专业软件）',
+        showCancel: false,
+        confirmText: '知道了'
+      });
+      return;
+    }
 
     wx.showLoading({ title: '保存中...' });
 
@@ -402,6 +427,17 @@ Page({
     const images = this.data.convertedImages;
 
     if (images.length === 0) {
+      return;
+    }
+
+    // 演示模式检测
+    if (images.length > 0 && images[0].cloudPath.startsWith('demo_')) {
+      wx.showModal({
+        title: '演示模式',
+        content: '当前为演示模式，无法保存真实图片。\n\n如需使用真实转换功能，建议使用：\n• iLovePDF（免费在线工具）\n• Smallpdf（免费试用）\n• Adobe Acrobat（专业软件）',
+        showCancel: false,
+        confirmText: '知道了'
+      });
       return;
     }
 

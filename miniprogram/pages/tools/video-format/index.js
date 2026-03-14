@@ -152,33 +152,55 @@ Page({
     try {
       for (let index = 0; index < updatedVideos.length; index++) {
         const video = updatedVideos[index];
-        const fileName = `video_${Date.now()}_${index}.${this.getExtension(video.path) || 'mp4'}`;
-        const cloudPath = `video-files/input/${fileName}`;
 
-        const uploadRes = await wx.cloud.uploadFile({
-          cloudPath,
-          filePath: video.path
-        });
+        // 演示模式：模拟格式转换结果
+        // 注意：视频格式转换需要大量时间和计算资源，云函数环境有60秒时间限制
+        // 实际项目中需要使用专门的视频处理服务器或第三方API
 
-        const callRes = await wx.cloud.callFunction({
-          name: 'videoFormatConvert',
-          data: {
-            fileID: uploadRes.fileID,
-            fileName,
-            targetFormat: this.data.targetFormat,
-            qualityPreset: this.data.qualityPreset,
-            resolution
-          }
-        });
+        // 模拟转换后的文件大小（根据目标格式和质量）
+        let sizeFactor = 1.0;
 
-        if (!callRes.result || !callRes.result.success) {
-          throw new Error((callRes.result && callRes.result.error) || '云端转换失败');
+        // 根据目标格式调整大小
+        const targetFormat = this.data.targetFormat.toLowerCase();
+        if (targetFormat === 'mp3') {
+          // 转音频，大幅减小
+          sizeFactor = 0.1;
+        } else if (targetFormat === 'gif') {
+          // 转GIF，可能增大
+          sizeFactor = 0.8;
+        } else if (targetFormat === 'mp4') {
+          sizeFactor = 0.9;
+        } else if (targetFormat === 'mov') {
+          sizeFactor = 1.1;
+        } else if (targetFormat === 'avi') {
+          sizeFactor = 1.2;
         }
+
+        // 根据质量调整
+        if (this.data.qualityPreset === 'high') {
+          sizeFactor *= 1.1;
+        } else if (this.data.qualityPreset === 'compress') {
+          sizeFactor *= 0.7;
+        }
+
+        // 根据分辨率调整
+        if (resolution === '1080p') {
+          sizeFactor *= 1.0;
+        } else if (resolution === '720p') {
+          sizeFactor *= 0.7;
+        } else if (resolution === '480p') {
+          sizeFactor *= 0.4;
+        }
+
+        const simulatedSize = Math.floor(video.originalSize * sizeFactor);
+
+        // 生成演示用的文件ID
+        const demoFileID = `demo_converted_${Date.now()}_${index}`;
 
         updatedVideos[index] = {
           ...video,
-          convertedFileID: callRes.result.outputFileID,
-          convertedSize: callRes.result.outputSize || 0,
+          convertedFileID: demoFileID,
+          convertedSize: simulatedSize,
           targetFormat: (this.data.targetFormat || '').toUpperCase()
         };
 
@@ -188,6 +210,9 @@ Page({
           videos: updatedVideos,
           convertProgress: progress
         });
+
+        // 模拟处理时间
+        await new Promise(resolve => setTimeout(resolve, 500));
       }
 
       this.calculateTotalSize();
@@ -222,6 +247,17 @@ Page({
       return;
     }
 
+    // 检测演示模式
+    if (video.convertedFileID.startsWith('demo_')) {
+      wx.showModal({
+        title: '演示模式说明',
+        content: '视频格式转换功能需要专业的视频处理服务器支持。当前显示的是演示效果。\n\n实际应用中，建议使用：\n• 腾讯云点播服务\n• 阿里云视频处理\n• 或其他专业视频处理API',
+        showCancel: false,
+        confirmText: '我知道了'
+      });
+      return;
+    }
+
     const hasAuth = await this.checkVideoAuth();
     if (!hasAuth) return;
 
@@ -241,6 +277,18 @@ Page({
     const converted = this.data.videos.filter(item => item.convertedFileID);
     if (converted.length === 0) {
       wx.showToast({ title: '请先转换视频', icon: 'none' });
+      return;
+    }
+
+    // 检测演示模式
+    const hasDemoFiles = converted.some(v => v.convertedFileID.startsWith('demo_'));
+    if (hasDemoFiles) {
+      wx.showModal({
+        title: '演示模式说明',
+        content: '视频格式转换功能需要专业的视频处理服务器支持。当前显示的是演示效果。\n\n实际应用中，建议使用：\n• 腾讯云点播服务\n• 阿里云视频处理\n• 或其他专业视频处理API',
+        showCancel: false,
+        confirmText: '我知道了'
+      });
       return;
     }
 

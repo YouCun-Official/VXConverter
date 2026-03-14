@@ -35,9 +35,9 @@
           <view class="file-name">{{selectedFile.name}}</view>
           <view class="file-size">大小: {{selectedFile.size}}</view>
         </view>
-        <button class="remove-btn" bindtap="removeFile">
+        <view class="remove-btn" bindtap="removeFile">
           <text>✕</text>
-        </button>
+        </view>
       </view>
     </view>
   </view>

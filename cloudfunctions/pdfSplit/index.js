@@ -1,5 +1,4 @@
-// cloudfunctions/pdfSplit/index.js
-
+//路径：cloudfunctions/pdfSplit
 const cloud = require('wx-server-sdk');
 const { PDFDocument } = require('pdf-lib');
 

@@ -291,8 +291,8 @@ Page({
         0, 0, targetWidth, targetHeight
       );
 
-      // 导出图片
-      const tempFilePath = canvas.toTempFilePathSync({
+      // 导出图片（兼容不同基础库的 OffscreenCanvas 能力）
+      const tempFilePath = await this.canvasToTempFilePath(canvas, {
         quality: quality.value,
         fileType: 'jpg'
       });
@@ -411,6 +411,33 @@ Page({
       wx.getImageInfo({
         src: path,
         success: resolve,
+        fail: reject
+      });
+    });
+  },
+
+  /**
+   * 导出 Canvas 为临时文件
+   */
+  canvasToTempFilePath(canvas, options = {}) {
+    const syncOptions = {
+      quality: typeof options.quality === 'number' ? options.quality : 0.92,
+      fileType: options.fileType || 'jpg'
+    };
+
+    if (canvas && typeof canvas.toTempFilePathSync === 'function') {
+      return Promise.resolve(canvas.toTempFilePathSync(syncOptions));
+    }
+
+    const exportOptions = {
+      canvas,
+      ...syncOptions
+    };
+
+    return new Promise((resolve, reject) => {
+      wx.canvasToTempFilePath({
+        ...exportOptions,
+        success: (res) => resolve(res.tempFilePath),
         fail: reject
       });
     });

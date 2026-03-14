@@ -1,4 +1,4 @@
-// cloudfunctions/txtToPdf/index.js
+//路径：cloudfunctions/txtToPdf
 const cloud = require('wx-server-sdk');
 const PDFDocument = require('pdfkit');
 const fs = require('fs');

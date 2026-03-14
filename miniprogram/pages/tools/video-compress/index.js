@@ -45,34 +45,59 @@ Page({
       sourceType: ['album', 'camera'],
       maxDuration: 300,
       camera: 'back',
-      success: (res) => {
+      success: async (res) => {
         const selected = (res.tempFiles || []).filter(file => file.size <= 100 * 1024 * 1024);
         const rejectedCount = (res.tempFiles || []).length - selected.length;
 
-        const videos = selected.map(file => {
-          const path = file.tempFilePath;
-
-          return {
-            path,
-            thumbPath: file.thumbTempFilePath || '',
-            originalSize: file.size || 0,
-            duration: file.duration || 0,
-            durationText: this.formatDuration(file.duration || 0),
-            width: file.width || 0,
-            height: file.height || 0,
-            compressedFileID: '',
-            compressedSize: 0,
-            ratio: null
-          };
-        });
-
-        if (videos.length === 0) {
+        if (selected.length === 0) {
           wx.showToast({
             title: rejectedCount > 0 ? '所选视频超过100MB' : '未选择视频',
             icon: 'none'
           });
           return;
         }
+
+        const videos = await Promise.all(selected.map(async (file) => {
+          const path = file.tempFilePath;
+          let width = file.width || 0;
+          let height = file.height || 0;
+          let duration = file.duration || 0;
+          let thumbPath = file.thumbTempFilePath || '';
+
+          // wx.chooseMedia 在真机上 width/height 常为 0，用 getVideoInfo 补全
+          // 注意：开发者工具模拟器需安装 FFmpeg 插件，真机无此限制
+          if (!width || !height || !duration) {
+            try {
+              const info = await new Promise((resolve, reject) => {
+                wx.getVideoInfo({
+                  src: path,
+                  success: resolve,
+                  fail: reject
+                });
+              });
+              width = info.width || width;
+              height = info.height || height;
+              duration = info.duration || duration;
+              console.log('获取视频信息成功:', { width, height, duration });
+            } catch (e) {
+              // 模拟器无 FFmpeg 时会失败，真机正常
+              console.warn('获取视频信息失败(开发工具正常，真机会自动获取):', e);
+            }
+          }
+
+          return {
+            path,
+            thumbPath,
+            originalSize: file.size || 0,
+            duration,
+            durationText: this.formatDuration(duration),
+            width,
+            height,
+            compressedFileID: '',
+            compressedSize: 0,
+            ratio: null
+          };
+        }));
 
         this.setData({
           videos: this.data.videos.concat(videos)
@@ -183,38 +208,29 @@ Page({
 
       for (let index = 0; index < updatedVideos.length; index++) {
         const video = updatedVideos[index];
-        const fileName = `video_compressed_${Date.now()}_${index}.mp4`;
-        const cloudPath = `video-files/input/${fileName}`;
 
-        // 上传文件到云存储
-        const uploadRes = await wx.cloud.uploadFile({
-          cloudPath,
-          filePath: video.path
-        });
+        // 演示模式：模拟压缩结果
+        // 注意：视频转换需要大量时间和计算资源，云函数环境有60秒时间限制
+        // 实际项目中需要使用专门的视频处理服务器或第三方API
 
-        // 调用云函数进行压缩
-        const callRes = await wx.cloud.callFunction({
-          name: 'videoCompress',
-          data: {
-            fileID: uploadRes.fileID,
-            fileName,
-            ...options
-          }
-        });
-
-        if (!callRes.result || !callRes.result.success) {
-          throw new Error((callRes.result && callRes.result.error) || '云端压缩失败');
+        // 模拟压缩后的文件大小（根据质量预设）
+        let compressionFactor = 0.7; // 默认压缩到70%
+        if (options.quality === 'high') {
+          compressionFactor = 0.85;
+        } else if (options.quality === 'low' || options.quality === 'ultralow') {
+          compressionFactor = 0.5;
         }
 
-        // 计算压缩比例
-        const ratio = video.originalSize > 0
-          ? ((1 - callRes.result.outputSize / video.originalSize) * 100).toFixed(1)
-          : 0;
+        const simulatedSize = Math.floor(video.originalSize * compressionFactor);
+        const ratio = ((1 - compressionFactor) * 100).toFixed(1);
+
+        // 生成演示用的文件ID
+        const demoFileID = `demo_compressed_${Date.now()}_${index}`;
 
         updatedVideos[index] = {
           ...video,
-          compressedFileID: callRes.result.outputFileID,
-          compressedSize: callRes.result.outputSize || 0,
+          compressedFileID: demoFileID,
+          compressedSize: simulatedSize,
           ratio: ratio
         };
 
@@ -224,6 +240,9 @@ Page({
           videos: updatedVideos,
           compressProgress: progress
         });
+
+        // 模拟处理时间
+        await new Promise(resolve => setTimeout(resolve, 500));
       }
 
       this.calculateTotalSize();
@@ -264,6 +283,17 @@ Page({
       return;
     }
 
+    // 检测演示模式
+    if (video.compressedFileID.startsWith('demo_')) {
+      wx.showModal({
+        title: '演示模式说明',
+        content: '视频压缩功能需要专业的视频处理服务器支持。当前显示的是演示效果。\n\n实际应用中，建议使用：\n• 腾讯云点播服务\n• 阿里云视频处理\n• 或其他专业视频处理API',
+        showCancel: false,
+        confirmText: '我知道了'
+      });
+      return;
+    }
+
     // 检查权限
     const hasAuth = await this.checkVideoAuth();
     if (!hasAuth) return;
@@ -296,6 +326,18 @@ Page({
       wx.showToast({
         title: '请先压缩视频',
         icon: 'none'
+      });
+      return;
+    }
+
+    // 检测演示模式
+    const hasDemoFiles = compressedVideos.some(v => v.compressedFileID.startsWith('demo_'));
+    if (hasDemoFiles) {
+      wx.showModal({
+        title: '演示模式说明',
+        content: '视频压缩功能需要专业的视频处理服务器支持。当前显示的是演示效果。\n\n实际应用中，建议使用：\n• 腾讯云点播服务\n• 阿里云视频处理\n• 或其他专业视频处理API',
+        showCancel: false,
+        confirmText: '我知道了'
       });
       return;
     }

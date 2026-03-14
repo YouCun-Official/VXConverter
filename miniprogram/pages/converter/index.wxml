@@ -35,14 +35,6 @@
         </view>
         <text class="grid-label">PDF转Word</text>
       </view>
-
-      <!-- 图片文字提取 -->
-      <view class="grid-card" bindtap="navigateToImageOCR">
-        <view class="grid-icon ocr-icon">
-          <text class="emoji-icon">🔍</text>
-        </view>
-        <text class="grid-label">图片文字提取</text>
-      </view>
     </view>
   </view>
 
@@ -61,15 +53,6 @@
         </view>
         <text class="grid-label">PDF转PPT</text>
       </view>
-
-      <!-- PDF转图片 -->
-      <view class="grid-card" bindtap="navigateToPdfToImage">
-        <view class="grid-icon pdf-to-image-icon">
-          <text class="emoji-icon">🎨</text>
-        </view>
-        <text class="grid-label">PDF转图片</text>
-      </view>
-
 
     </view>
   </view>
@@ -130,14 +113,6 @@
           <text class="emoji-icon">📚</text>
         </view>
         <text class="grid-label">PDF合并</text>
-      </view>
-
-      <!-- PDF转图片 -->
-      <view class="grid-card" bindtap="navigateToPdfToImage">
-        <view class="grid-icon pdf-to-image-icon">
-          <text class="emoji-icon">🎨</text>
-        </view>
-        <text class="grid-label">PDF转图片</text>
       </view>
 
       <!-- PDF拆分 -->

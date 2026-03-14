@@ -1,7 +1,7 @@
 {
     "name": "markdown-to-pdf",
-    "version": "1.1.0",
-    "description": "Markdown to PDF with table and image support",
+    "version": "1.2.0",
+    "description": "Markdown to PDF with table and image support (optimized)",
     "main": "index.js",
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1"
@@ -14,6 +14,6 @@
         "marked": "^4.3.0",
         "iconv-lite": "^0.6.3",
         "axios": "^1.6.0",
-        "sharp": "^0.33.0"
+        "probe-image-size": "^7.2.3"
     }
 }

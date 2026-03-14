@@ -38,10 +38,10 @@ Page({
 
                 // 检查文件大小（限制10MB）
                 if (file.size > 10 * 1024 * 1024) {
-                    wx.showToast({
-                        title: '文件过大，请选择小于10MB的文件',
-                        icon: 'none',
-                        duration: 2000
+                    wx.showModal({
+                        title: '文件过大',
+                        content: '为保证转换质量和速度，建议选择小于10MB的Excel文件。\n\n转换限制：\n• 最多处理5个工作表\n• 每个工作表最多50行×10列',
+                        showCancel: false
                     });
                     return;
                 }
@@ -135,15 +135,18 @@ Page({
 
             if (convertResult.result && convertResult.result.success) {
                 // 转换成功
+                const result = convertResult.result;
+                const sheetInfo = result.sheetsProcessed ? `\n已处理${result.sheetsProcessed}个工作表` : '';
+
                 wx.showModal({
                     title: '转换成功',
-                    content: 'Excel已成功转换为PDF',
+                    content: `Excel已成功转换为PDF${sheetInfo}\n\n文件大小: ${this.formatSize(result.fileSize)}`,
                     confirmText: '下载',
                     cancelText: '完成',
                     success: async (res) => {
                         if (res.confirm) {
                             // 下载PDF文件
-                            this.downloadPDF(convertResult.result.pdfFileID);
+                            this.downloadPDF(result.pdfFileID);
                         }
                     }
                 });
@@ -216,6 +219,16 @@ Page({
                 icon: 'none'
             });
         }
+    },
+
+    /**
+     * 格式化文件大小
+     */
+    formatSize(bytes) {
+        if (!bytes) return '0B';
+        if (bytes < 1024) return bytes + 'B';
+        if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(2) + 'KB';
+        return (bytes / 1024 / 1024).toFixed(2) + 'MB';
     },
 
     /**

@@ -206,6 +206,18 @@ page {
   border-radius: 12rpx;
 }
 
+.preview-placeholder {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.placeholder-icon {
+  font-size: 60rpx;
+  color: white;
+}
+
 .duration-badge {
   position: absolute;
   bottom: 8rpx;

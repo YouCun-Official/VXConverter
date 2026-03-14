@@ -244,3 +244,75 @@
   line-height: 2;
   padding-left: 10rpx;
 }
+
+/* 转换结果区域 */
+.result-section {
+  margin-bottom: 30rpx;
+  padding: 0 40rpx;
+}
+
+.result-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 15rpx;
+  margin-bottom: 30rpx;
+}
+
+.result-icon {
+  font-size: 60rpx;
+}
+
+.result-title {
+  font-size: 36rpx;
+  font-weight: bold;
+  color: #22c55e;
+}
+
+.result-file {
+  background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+  border: 2rpx solid #86efac;
+  border-radius: 16rpx;
+  padding: 30rpx 50rpx;
+  display: flex;
+  align-items: center;
+  gap: 30rpx;
+  margin-bottom: 30rpx;
+}
+
+.file-status {
+  font-size: 22rpx;
+  color: #f59e0b;
+  margin-top: 5rpx;
+}
+
+.result-actions {
+  display: flex;
+  gap: 20rpx;
+  margin-bottom: 20rpx;
+}
+
+.btn-success {
+  flex: 1;
+  background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+  color: white;
+}
+
+.btn-success:active {
+  opacity: 0.9;
+}
+
+.btn-outline {
+  flex: 1;
+  background: white;
+  color: #22c55e;
+  border: 2rpx solid #22c55e !important;
+}
+
+.btn-outline::after {
+  border: none;
+}
+
+.btn-outline:active {
+  background: #f0fdf4;
+}

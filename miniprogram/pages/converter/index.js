@@ -42,17 +42,7 @@ Page({
     },
 
     /**
-     * 导航到图片文字提取页面
-     */
-    navigateToImageOCR() {
-        wx.showToast({
-            title: '功能开发中，敬请期待',
-            icon: 'none',
-            duration: 2000
-        });
-    },
 
-    /**
      * PDF操作功能导航方法
      */
     navigateToPdfMerge() {
@@ -60,16 +50,6 @@ Page({
             url: '/pages/tools/pdf-merge/index'
         });
     },
-
-    navigateToPdfToPpt() {
-        wx.showToast({
-            title: '功能开发中，敬请期待',
-            icon: 'none',
-            duration: 2000
-        });
-    },
-
-
 
     navigateToPptToPdf() {
         wx.navigateTo({

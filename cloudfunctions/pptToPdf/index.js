@@ -1,4 +1,4 @@
-// cloudfunctions/pptToPdf/index.js
+//路径：cloudfunctions/pptToPdf
 const cloud = require('wx-server-sdk');
 const { exec } = require('child_process');
 const util = require('util');

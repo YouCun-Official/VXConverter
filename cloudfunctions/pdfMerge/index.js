@@ -1,5 +1,4 @@
-// cloudfunctions/pdfMerge/index.js
-
+//路径：cloudfunctions/pdfMerge
 const cloud = require('wx-server-sdk');
 const { PDFDocument } = require('pdf-lib');
 

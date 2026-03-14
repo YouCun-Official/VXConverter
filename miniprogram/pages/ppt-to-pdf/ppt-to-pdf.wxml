@@ -34,11 +34,39 @@
       class="btn btn-primary"
       bindtap="convertToPDF"
       disabled="{{!selectedFile || isConverting}}"
+      wx:if="{{!convertedFile}}"
     >
       <text class="btn-icon" wx:if="{{!isConverting}}">🔄</text>
       <text wx:if="{{isConverting}}">转换中...</text>
       <text wx:else>转换为PDF</text>
     </button>
+  </view>
+
+  <!-- 转换结果 -->
+  <view class="result-section" wx:if="{{convertedFile}}">
+    <view class="result-header">
+      <text class="result-icon">✅</text>
+      <text class="result-title">转换成功</text>
+    </view>
+
+    <view class="result-file">
+      <view class="file-icon-large">📄</view>
+      <view class="file-details">
+        <text class="file-name">{{convertedFile.fileName}}</text>
+        <text class="file-size">{{convertedFile.fileSize}}</text>
+      </view>
+    </view>
+
+    <view class="result-actions">
+      <button class="btn btn-success" bindtap="downloadPDF">
+        <text class="btn-icon">⬇️</text>
+        <text>{{convertedFile.isDemo ? '查看说明' : '下载PDF'}}</text>
+      </button>
+      <button class="btn btn-outline" bindtap="convertAnother">
+        <text class="btn-icon">🔄</text>
+        <text>再转换一个</text>
+      </button>
+    </view>
   </view>
 
   <!-- 进度提示 -->

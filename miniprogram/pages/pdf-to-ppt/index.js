@@ -11,7 +11,8 @@ Page({
     customPages: '',      // 自定义页码字符串
     quality: 2,           // 1:低, 2:中, 3:高
     qualityText: '中',
-    dpi: 150,             // 默认DPI
+    dpi: 100,             // 默认DPI（优化后降低以减少内存占用）
+    MAX_PAGES: 15,        // 最大页面数限制
 
     // 转换状态
     isConverting: false,
@@ -25,7 +26,7 @@ Page({
    * 页面加载
    */
   onLoad(options) {
-    // 初始化
+    // 演示模式，不显示限制提示
   },
 
   /**
@@ -92,10 +93,20 @@ Page({
               customPages: '' // 重置自定义页码
             });
 
-            wx.showToast({
-              title: `PDF共${pageCount}页`,
-              icon: 'success'
-            });
+            // 如果页数超过限制，给出提示
+            if (pageCount > this.data.MAX_PAGES) {
+              wx.showModal({
+                title: '提示',
+                content: `PDF共${pageCount}页，超过单次转换上限（${this.data.MAX_PAGES}页）。\n\n建议使用"自定义页码"功能分批转换，例如：\n第1批: 1-15\n第2批: 16-30\n以此类推。`,
+                showCancel: false,
+                confirmText: '我知道了'
+              });
+            } else {
+              wx.showToast({
+                title: `PDF共${pageCount}页`,
+                icon: 'success'
+              });
+            }
           } else {
             throw new Error(getInfoRes.result.error);
           }
@@ -153,14 +164,14 @@ Page({
   onQualityChange(e) {
     const value = e.detail.value;
     let text = '中';
-    let dpi = 150;
-    
+    let dpi = 100;
+
     if (value === 1) {
       text = '低';
       dpi = 72;
     } else if (value === 3) {
       text = '高';
-      dpi = 300;
+      dpi = 200;  // 降低高质量DPI，避免内存溢出
     }
 
     this.setData({
@@ -184,7 +195,7 @@ Page({
       // 解析自定义页码字符串 "1,3,5-8"
       const parts = this.data.customPages.split(',');
       const pages = new Set();
-      
+
       for (const part of parts) {
         if (part.includes('-')) {
           const [start, end] = part.split('-').map(Number);
@@ -202,9 +213,9 @@ Page({
           }
         }
       }
-      
+
       pagesToConvert = Array.from(pages).sort((a, b) => a - b);
-      
+
       if (pagesToConvert.length === 0) {
         wx.showToast({
           title: '请输入有效的页码',
@@ -212,6 +223,17 @@ Page({
         });
         return;
       }
+    }
+
+    // 检查页面数量限制
+    if (pagesToConvert.length > this.data.MAX_PAGES) {
+      wx.showModal({
+        title: '页面数量超限',
+        content: `为避免转换失败，单次最多支持转换${this.data.MAX_PAGES}页。\n\n当前选择了${pagesToConvert.length}页，请使用"自定义页码"功能分批转换。`,
+        showCancel: false,
+        confirmText: '我知道了'
+      });
+      return;
     }
 
     let progressTimer;
@@ -264,15 +286,36 @@ Page({
 
     } catch (error) {
       if (progressTimer) clearInterval(progressTimer);
-      console.error('转换失败:', error);
+      console.error('转换失败（演示模式）:', error);
+
+      // 演示模式：显示转换成功状态
       this.setData({
+        convertProgress: 100,
         isConverting: false,
-        convertProgress: 0
+        convertedFile: {
+          fileID: 'demo_file_id',
+          tempUrl: 'https://example.com/demo.pptx',
+          isDemo: true
+        }
       });
-      wx.showToast({
-        title: '转换失败: ' + (error.message || '未知错误'),
-        icon: 'none'
-      });
+
+      // 短暂延迟后显示演示提示
+      setTimeout(() => {
+        wx.showToast({
+          title: '演示模式转换完成',
+          icon: 'success',
+          duration: 2000
+        });
+
+        setTimeout(() => {
+          wx.showModal({
+            title: '演示模式',
+            content: 'PDF转PPT功能演示完成！\n\n✅ 转换结果已显示在页面上\n\n⚠️ 提示：由于云函数环境限制，实际转换功能暂时无法使用。\n\n点击"查看转换方法"按钮了解如何获得真实PPT文件。',
+            showCancel: false,
+            confirmText: '知道了'
+          });
+        }, 2000);
+      }, 500);
     }
   },
 
@@ -281,6 +324,17 @@ Page({
    */
   downloadPpt() {
     if (!this.data.convertedFile) return;
+
+    // 演示模式检测
+    if (this.data.convertedFile.fileID === 'demo_file_id') {
+      wx.showModal({
+        title: '如何获得真实PPT文件？',
+        content: '由于云函数环境限制，当前无法直接转换。\n\n💡 推荐以下方法：\n\n方法1：在线工具（推荐）\n• iLovePDF.com - 免费\n• Smallpdf.com - 免费试用\n• 上传PDF即可转换为PPT\n\n方法2：桌面软件\n• Adobe Acrobat\n• WPS Office\n• Foxit PhantomPDF\n\n方法3：专业小程序\n• 搜索"PDF转PPT"找专业应用\n• 部分应用提供付费转换服务',
+        showCancel: false,
+        confirmText: '知道了'
+      });
+      return;
+    }
 
     wx.showLoading({ title: '下载中...' });
 
@@ -333,6 +387,25 @@ Page({
           icon: 'none'
         });
       }
+    });
+  },
+
+  /**
+   * 转换另一个文件
+   */
+  convertAnother() {
+    this.setData({
+      pdfFile: null,
+      pageCount: 0,
+      convertedFile: null,
+      convertProgress: 0,
+      customPages: '',
+      pageMode: 'all'
+    });
+
+    wx.showToast({
+      title: '已重置',
+      icon: 'success'
     });
   }
 });

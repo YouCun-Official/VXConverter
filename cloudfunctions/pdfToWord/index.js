@@ -1,4 +1,4 @@
-// cloudfunctions/pdfToWord/index.js
+//路径：cloudfunctions/pdfToWord
 const cloud = require('wx-server-sdk');
 const pdfParse = require('pdf-parse');
 const { Document, Paragraph, TextRun, HeadingLevel, AlignmentType, Packer } = require('docx');

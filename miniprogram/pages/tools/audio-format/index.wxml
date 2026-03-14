@@ -37,6 +37,10 @@
 
         <view class="audio-info">
           <view class="info-row">
+            <text class="file-name">{{item.name}}</text>
+          </view>
+
+          <view class="info-row">
             <text class="info-label">原始:</text>
             <text class="info-value">{{formatSize(item.originalSize)}} | {{item.format}}</text>
           </view>

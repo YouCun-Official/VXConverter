@@ -10,6 +10,7 @@
   "license": "ISC",
   "dependencies": {
     "wx-server-sdk": "~2.6.3",
-    "pdf-poppler": "^0.2.1"
+    "pdfjs-dist": "^3.11.174",
+    "canvas": "^2.11.2"
   }
 }

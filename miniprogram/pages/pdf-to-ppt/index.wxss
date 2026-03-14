@@ -394,3 +394,15 @@
   color: #666;
   line-height: 1.4;
 }
+
+/* 再转换按钮 */
+.convert-again-btn {
+  background: white !important;
+  color: #16a34a !important;
+  border: 2rpx solid #16a34a !important;
+  margin-top: 15rpx;
+}
+
+.convert-again-btn::after {
+  border: none;
+}

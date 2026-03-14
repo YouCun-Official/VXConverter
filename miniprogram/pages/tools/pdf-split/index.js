@@ -73,46 +73,34 @@ Page({
         wx.showLoading({ title: '分析PDF...' });
 
         try {
-          // 上传并获取页数
+          // 本地读取PDF二进制，提取页数（无需云函数）
+          const pageCount = await this.getPageCountLocally(file.path);
+
+          // 上传PDF到云存储
           const uploadRes = await wx.cloud.uploadFile({
             cloudPath: `pdf-split/input/${Date.now()}_${file.name}`,
             filePath: file.path
           });
 
-          // 调用云函数获取页数
-          const getInfoRes = await wx.cloud.callFunction({
-            name: 'pdfSplit',
-            data: {
-              action: 'getPageCount',
-              fileID: uploadRes.fileID
-            }
-          });
-
           wx.hideLoading();
 
-          if (getInfoRes.result.success) {
-            const pageCount = getInfoRes.result.pageCount;
+          this.setData({
+            pdfFile: {
+              tempFilePath: file.path,
+              name: file.name,
+              size: file.size,
+              fileID: uploadRes.fileID
+            },
+            pageCount: pageCount,
+            endPage: pageCount,
+            ranges: [],
+            resultFiles: []
+          });
 
-            this.setData({
-              pdfFile: {
-                tempFilePath: file.path,
-                name: file.name,
-                size: file.size,
-                fileID: uploadRes.fileID
-              },
-              pageCount: pageCount,
-              endPage: pageCount,
-              ranges: [],
-              resultFiles: []
-            });
-
-            wx.showToast({
-              title: `PDF共${pageCount}页`,
-              icon: 'success'
-            });
-          } else {
-            throw new Error(getInfoRes.result.error);
-          }
+          wx.showToast({
+            title: `PDF共${pageCount}页`,
+            icon: 'success'
+          });
 
         } catch (error) {
           wx.hideLoading();
@@ -151,6 +139,41 @@ Page({
           });
         }
       }
+    });
+  },
+
+  /**
+   * 本地解析PDF页数（读取二进制，匹配 /Count N 字段）
+   * 避免为获取页数而额外调用云函数
+   */
+  getPageCountLocally(filePath) {
+    return new Promise((resolve, reject) => {
+      const fs = wx.getFileSystemManager();
+      fs.readFile({
+        filePath,
+        encoding: 'binary',
+        success: (res) => {
+          try {
+            const content = res.data;
+            // PDF 页数保存在页树的 /Count N 中，取最大值即为总页数
+            const matches = content.match(/\/Count\s+(\d+)/g) || [];
+            if (matches.length === 0) {
+              resolve(1);
+              return;
+            }
+            const counts = matches.map(m => parseInt(m.replace(/\/Count\s+/, ''), 10));
+            const pageCount = Math.max(...counts);
+            resolve(pageCount > 0 ? pageCount : 1);
+          } catch (e) {
+            console.warn('本地解析页数失败，默认1页:', e);
+            resolve(1);
+          }
+        },
+        fail: (err) => {
+          console.warn('读取PDF文件失败:', err);
+          resolve(1);
+        }
+      });
     });
   },
 

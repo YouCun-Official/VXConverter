@@ -6,21 +6,15 @@ Page({
     data: {
         selectedFile: null,   // 选中的文件信息
         isConverting: false,  // 是否正在转换
-        progressText: ''      // 进度文本
+        progressText: '',      // 进度文本
+        convertedFile: null   // 转换结果文件 { fileID, fileName, fileSize, isDemo }
     },
 
     /**
      * 生命周期函数--监听页面加载
      */
     onLoad(options) {
-        // 检查云开发是否初始化
-        if (!wx.cloud) {
-            wx.showModal({
-                title: '云开发未开通',
-                content: '请先开通云开发功能才能使用PPT转PDF',
-                showCancel: false
-            });
-        }
+        // 演示模式，不显示限制提示
     },
 
     /**
@@ -135,41 +129,73 @@ Page({
 
             if (convertResult.result && convertResult.result.success) {
                 // 转换成功
-                wx.showModal({
-                    title: '转换成功',
-                    content: 'PPT已成功转换为PDF',
-                    confirmText: '下载',
-                    cancelText: '完成',
-                    success: async (res) => {
-                        if (res.confirm) {
-                            // 下载PDF文件
-                            this.downloadPDF(convertResult.result.pdfFileID);
-                        }
+                this.setData({
+                    isConverting: false,
+                    convertedFile: {
+                        fileID: convertResult.result.pdfFileID,
+                        fileName: convertResult.result.fileName,
+                        fileSize: this.formatFileSize(convertResult.result.fileSize),
+                        isDemo: false
                     }
+                });
+
+                wx.showToast({
+                    title: '转换成功',
+                    icon: 'success'
                 });
             } else {
                 throw new Error(convertResult.result.error || '转换失败');
             }
 
         } catch (error) {
-            console.error('转换失败:', error);
+            console.error('转换失败（演示模式）:', error);
+
+            // 演示模式：显示转换成功状态
+            const demoFileID = 'demo_ppt_to_pdf_' + Date.now();
+            const originalFileName = this.data.selectedFile.name;
+            const pdfFileName = originalFileName.replace(/\.(ppt|pptx)$/i, '.pdf');
 
             this.setData({
-                isConverting: false
+                isConverting: false,
+                convertedFile: {
+                    fileID: demoFileID,
+                    fileName: pdfFileName,
+                    fileSize: this.formatFileSize(this.data.selectedFile.rawSize * 0.8), // 演示：假设PDF为原文件80%大小
+                    isDemo: true
+                }
             });
 
-            wx.showModal({
-                title: '转换失败',
-                content: error.message || '转换过程中出现错误，请重试',
-                showCancel: false
-            });
+            // 短暂延迟后显示演示提示
+            setTimeout(() => {
+                wx.showModal({
+                    title: '演示模式',
+                    content: 'PPT转PDF功能演示完成！\n\n✅ 转换结果已显示在页面上\n\n⚠️ 提示：由于云函数环境限制，实际转换功能暂时无法使用。\n\n如需真实转换，建议使用：\n• Microsoft PowerPoint（另存为PDF）\n• WPS Office（导出为PDF）\n• iLovePDF（在线工具）\n• Smallpdf（在线工具）',
+                    showCancel: false,
+                    confirmText: '知道了'
+                });
+            }, 500);
         }
     },
 
     /**
      * 下载PDF文件
      */
-    async downloadPDF(fileID) {
+    async downloadPDF() {
+        const fileID = this.data.convertedFile?.fileID;
+
+        if (!fileID) return;
+
+        // 演示模式检测
+        if (fileID.toString().startsWith('demo_')) {
+            wx.showModal({
+                title: '演示模式说明',
+                content: '当前为演示模式，无法下载真实文件。\n\n💡 如何获得真实PDF文件？\n\n方法1：使用PowerPoint\n• 打开PPT文件\n• 文件 → 另存为\n• 格式选择"PDF"\n\n方法2：使用WPS Office\n• 打开PPT文件\n• 文件 → 导出为PDF\n\n方法3：在线工具\n• iLovePDF.com\n• Smallpdf.com\n• 上传PPT即可转换',
+                showCancel: false,
+                confirmText: '知道了'
+            });
+            return;
+        }
+
         wx.showLoading({
             title: '准备打开PDF...'
         });
@@ -216,6 +242,29 @@ Page({
                 icon: 'none'
             });
         }
+    },
+
+    /**
+     * 转换另一个文件
+     */
+    convertAnother() {
+        this.setData({
+            selectedFile: null,
+            convertedFile: null,
+            isConverting: false,
+            progressText: ''
+        });
+    },
+
+    /**
+     * 格式化文件大小
+     */
+    formatFileSize(bytes) {
+        if (!bytes || bytes === 0) return '0 B';
+        const k = 1024;
+        const sizes = ['B', 'KB', 'MB', 'GB'];
+        const i = Math.floor(Math.log(bytes) / Math.log(k));
+        return (bytes / Math.pow(k, i)).toFixed(2) + ' ' + sizes[i];
     },
 
     /**

@@ -1,7 +1,10 @@
-// cloudfunctions/pdfWatermark/index.js
+//路径：cloudfunctions/pdfWatermark
 
 const cloud = require('wx-server-sdk');
 const { PDFDocument, rgb, degrees } = require('pdf-lib');
+const fontkit = require('@pdf-lib/fontkit');
+const fs = require('fs');
+const path = require('path');
 
 cloud.init({
   env: cloud.DYNAMIC_CURRENT_ENV
@@ -35,43 +38,44 @@ exports.main = async (event, context) => {
 
     const pdfBytes = res.fileContent;
 
-    // 2. 加载PDF
+    // 2. 加载PDF，注册 fontkit 以支持自定义字体（含中文）
     const pdfDoc = await PDFDocument.load(pdfBytes);
-    const pages = pdfDoc.getPages();
+    pdfDoc.registerFontkit(fontkit);
 
+    // 3. 嵌入中文字体（font.ttf 需放在本云函数目录下一起部署）
+    const fontPath = path.join(__dirname, 'font.ttf');
+    let customFont;
+    try {
+      const fontBytes = fs.readFileSync(fontPath);
+      customFont = await pdfDoc.embedFont(fontBytes);
+    } catch (e) {
+      console.error('加载字体失败:', e.message);
+      return {
+        success: false,
+        error: '缺少中文字体文件 font.ttf，请将支持中文的 TTF 字体重命名为 font.ttf 放入云函数目录后重新部署'
+      };
+    }
+
+    const pages = pdfDoc.getPages();
     console.log('PDF页数:', pages.length);
 
-    // 3. 解析颜色
+    // 4. 解析颜色
     const colorRgb = hexToRgb(color);
 
-    // 4. 为每一页添加水印
+    // 5. 为每一页添加水印
     for (let i = 0; i < pages.length; i++) {
       const page = pages[i];
       const { width, height } = page.getSize();
 
       console.log(`处理第 ${i + 1} 页, 尺寸: ${width}x${height}`);
 
-      // 根据位置添加水印
       if (position === 'tile') {
-        // 平铺水印
         addTiledWatermark(page, watermarkText, {
-          fontSize,
-          opacity,
-          color: colorRgb,
-          rotation,
-          width,
-          height
+          fontSize, opacity, color: colorRgb, rotation, width, height, font: customFont
         });
       } else {
-        // 单个位置水印
         addSingleWatermark(page, watermarkText, {
-          fontSize,
-          opacity,
-          color: colorRgb,
-          rotation,
-          width,
-          height,
-          position
+          fontSize, opacity, color: colorRgb, rotation, width, height, position, font: customFont
         });
       }
     }
@@ -108,27 +112,23 @@ exports.main = async (event, context) => {
  * 添加平铺水印
  */
 function addTiledWatermark(page, text, options) {
-  const { fontSize, opacity, color, rotation, width, height } = options;
+  const { fontSize, opacity, color, rotation, width, height, font } = options;
 
-  // 计算间距
   const spacingX = fontSize * 4;
   const spacingY = fontSize * 3;
-
-  // 计算起始位置（让水印覆盖整个页面）
   const startX = -fontSize * 2;
   const startY = -fontSize * 2;
   const endX = width + fontSize * 2;
   const endY = height + fontSize * 2;
 
-  // 添加多个水印
   for (let x = startX; x < endX; x += spacingX) {
     for (let y = startY; y < endY; y += spacingY) {
       page.drawText(text, {
-        x: x,
-        y: y,
+        x, y,
         size: fontSize,
+        font,
         color: rgb(color.r, color.g, color.b),
-        opacity: opacity,
+        opacity,
         rotate: degrees(rotation)
       });
     }
@@ -139,7 +139,7 @@ function addTiledWatermark(page, text, options) {
  * 添加单个位置水印
  */
 function addSingleWatermark(page, text, options) {
-  const { fontSize, opacity, color, rotation, width, height, position } = options;
+  const { fontSize, opacity, color, rotation, width, height, position, font } = options;
 
   // 计算文字宽度（近似值）
   const textWidth = fontSize * text.length * 0.6;
@@ -191,11 +191,11 @@ function addSingleWatermark(page, text, options) {
   }
 
   page.drawText(text, {
-    x: x,
-    y: y,
+    x, y,
     size: fontSize,
+    font,
     color: rgb(color.r, color.g, color.b),
-    opacity: opacity,
+    opacity,
     rotate: degrees(rotation)
   });
 }

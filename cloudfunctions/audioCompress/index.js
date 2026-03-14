@@ -1,3 +1,5 @@
+//路径：cloudfunctions/audioCompress
+//作用：下载云存储中的音频文件，按指定质量/码率和格式（mp3/aac/wav）进行转码压缩后再上传回云存储，并返回新文件信息
 const cloud = require('wx-server-sdk');
 const ffmpeg = require('fluent-ffmpeg');
 const ffmpegInstaller = require('@ffmpeg-installer/ffmpeg');
